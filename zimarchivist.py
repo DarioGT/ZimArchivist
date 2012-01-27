@@ -32,6 +32,10 @@ import logging
 import uuid
 
 
+#TODO detect links containing pdf...
+#TODO detect obsolete archived html files
+#FIXME accent dans URL
+
 
 def protect(s):
     """Protect Metacaracters in a string"""
@@ -44,10 +48,15 @@ def get_zim_files(zim_root):
     logging.info('Looking for zim files in ' + str(zim_root))
     zim_files = []
     for root, dirnames, filenames in os.walk(zim_root):
-        for filename in glob.glob(str(root) + '*.txt' ):
+        logging.debug('look in ' + str(root))
+        for filename in glob.glob(os.path.join(root, '*.txt')):
+            logging.debug('file ' + filename)
+            
             zim_files.append(filename)
     if zim_files == []:
         logging.warning('No zim file found!')
+    logging.debug('List of zim files')
+    logging.debug(zim_files)
     return zim_files
 
 def get_unexpanded_path(path):
@@ -145,7 +154,6 @@ def process_zim_file(zim_file, zim_archive_path):
     shutil.copyfile(zim_file + '.copy', zim_file)
     os.remove(zim_file + '.copy')
 
-#FIXME accent dans URL
 
 
 def usage():
