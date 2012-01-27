@@ -3,9 +3,9 @@
 
 import unittest 
 
-from zimarchive import make_archive
-from zimarchive import protect
-from zimarchive import link_archive_status
+from zimarchivist import make_archive
+from zimarchivist import protect
+from zimarchivist import link_archive_status
 
 
 class TestZimarchive(unittest.TestCase):
