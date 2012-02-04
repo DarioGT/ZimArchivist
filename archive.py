@@ -85,11 +85,4 @@ def make_archive(html_path, url):
             except IOError:
                 logging.critical('could not write in ' + str(html_path) + ', leaving...') 
                 sys.exit(1)
-            #else:
-            #    #everything is fine, add the link
-            #     
-            #    new_url = url + " [[" + utils.get_unexpanded_path(html_path) + "|Archive]]"
-            #    url = utils.protect(url)
-            #    line = re.sub(url, new_url, line)
-    #return line
 

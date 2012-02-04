@@ -40,6 +40,29 @@ def get_unexpanded_path(path):
     path = re.sub(os.getenv('HOME'), '~', str(path))
     return path
 
+def create_pidfile():
+    if os.access(os.path.expanduser("~/zimarchivist.lock"), os.F_OK):
+            #Oh oh, there is a lock file
+            pidfile = open(os.path.expanduser("~/zimarchivist.lock"), "r")
+            pidfile.seek(0)
+            old_pd = pidfile.readline()
+            #PID is running?
+            if os.path.exists("/proc/%s" % old_pd):
+                    #Yes
+                    print('An instance is already running, exiting')
+                    sys.exit(1)
+            else:
+                    #No
+                    os.remove(os.path.expanduser("~/zimarchivist.lock"))
+    
+    pidfile = open(os.path.expanduser("~/zimarchivist.lock"), "w")
+    pidfile.write("%s" % os.getpid())
+    pidfile.close
+
+def release_pidfile():
+    os.remove(os.path.expanduser("~/zimarchivist.lock"))
+    
+
 def _test():
     import doctest
     doctest.testmod()

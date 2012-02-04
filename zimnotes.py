@@ -53,7 +53,7 @@ def add_label(html_path, url, line):
     Add the label "Archive" to the archive after the url in the line 
     Return the line
     """
-    new_url = url + " [[" + utils.get_unexpanded_path(html_path) + "|Archive]]"
+    new_url = url + " [[" + utils.get_unexpanded_path(html_path) + "|(Archive)]]"
     url = utils.protect(url)
     line = re.sub(url, new_url, line)
     return line
@@ -61,35 +61,54 @@ def add_label(html_path, url, line):
 def link_archive_status(url, line):
     """ 
     Is the url in the line already archived?
-    Basically, it checks if [[path|Archive]] follows the url
+    Basically, it checks if [[path|(Archive)]] follows the url
     False: Not archived 
     True: Archived
     """
     logging.debug('line= ' + str(line))
-    link_archived = re.compile(str(url) + '\s\[\[.*\|Archive\]\]')
+    link_archived = re.compile(str(url) + '\s\[\[.*\|\(Archive\)\]\]')
     matching = link_archived.search(line)
     if matching == None:
         return False
     else:
-        return True  
-    
+        return True
 
-def add_cache_zim_files(zim_files, zim_archive_path):
-    """ Add cache links in zim files"""
+def extract_labels_filepath(line):
+    filepaths = []
+    #First, we detect labels
+    re_archive = re.compile('\s\[\[(.+)\|\(Archive\)\]\]')
+    labels = re.findall('\s\[\[(.+?)\|\(Archive\)\]\]',line) #? is for non-greedy (minimal) fashion
+    for label in labels:
+        filepaths.append(label)
+    return filepaths
+
+def process_zim_file(zim_file, zim_archive_path):
+    """
+    Read the zim file
+    Look for links
+    Archive links when necessary
+    """
     link = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+    begin_noarchive = re.compile('\{noarchive\}')
+    end_noarchive = re.compile('\{\/noarchive\}')
 
-    for zim_file in zim_files:
-        logging.debug('Processing file = ' + str(zim_file))
-        #TODO exception
-        copy = open(zim_file + '.copy', 'w')
 
-        for line in open(zim_file, 'r'):
+    #for zim_file in zim_files:
+    logging.debug('Processing file = ' + str(zim_file))
+    #TODO exception
+    copy = open(zim_file + '.copy', 'w')
+
+    noarchive = False
+
+    for line in open(zim_file, 'r'):
+        if begin_noarchive.search(line) != None:
+            noarchive = True
+        if end_noarchive.search(line) != None:
+            noarchive = False
+        #If we are not in a noarchive block:
+        if noarchive == False:
             urls = link.findall(line)
-            if urls == []:
-                #there is no link
-                copy.write(line)
-                pass
-            else:
+            if urls != []:
                 for url in urls:
                     #Is it already archived?
                     logging.debug('url: ' + str(url))
@@ -99,26 +118,21 @@ def add_cache_zim_files(zim_files, zim_archive_path):
                         #line = make_archive(html_file_path, url, line)
                         try:
                             archive.make_archive(html_file_path, url)
-                        except archive.URLError: #FIXME namespace?
+                        except archive.URLError:
                             #TODO
                             print('ERROR')
-                            #pass
-                        #except:
-                            ##TODO
-                            #print('ERROR')
                             #pass
                         else:
                             #We successfully get the page
                             #We change the line
                             logging.debug('Add label')
                             line = add_label(html_file_path, url, line)
-                #All urls have been treated, write the line
-                copy.write(line)
-        copy.close()
-        #The new file is prepared, move it...
-        logging.debug('Move the copy to the original file')
-        shutil.copyfile(zim_file + '.copy', zim_file)
-        os.remove(zim_file + '.copy')
+        copy.write(line)
+    copy.close()
+    #The new file is prepared, move it...
+    logging.debug('Move the copy to the original file')
+    shutil.copyfile(zim_file + '.copy', zim_file)
+    os.remove(zim_file + '.copy')
 
 
 if __name__ == '__main__':

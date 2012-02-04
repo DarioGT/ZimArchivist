@@ -27,14 +27,8 @@ import logging
 
 #our lib...
 import zimnotes
-
-#TODO detect links containing pdf...
-#TODO detect obsolete archived html files
-#TODO prevent a URL archivement
-#FIXME accent dans URL
-#thread for downloading?
-#TODO catch sigterm, keyinterrupt...
-
+import utils
+import timechecker
 
 
 
@@ -45,27 +39,20 @@ import zimnotes
 #TODO split...
 def clean_archive(zim_files, zim_archive_path):
     """ Remove archives with no entry """
-    #TODO
+   
+    #First, we bluid a dictionary
+    #to list usefull archives
     file_archives = {}
-    for filename in glob.glob(os.path.join(zim_archive_path, '*')): #fonction faite
-        #faire un dico nom -> bool = False
+    for filename in archive.get_archive_list(zim_archive_path): 
         file_archives[filename] = False
    
-    re_archive = re.compile('\s\[\[.*\|Archive\]\]')
+    re_archive = re.compile('\s\[\[.*\|\(Archive\)\]\]')
     for filename in zim_files:
         for line in open(filename, 'r'):
-            #lire ligne par ligne
-            #récupérer les partie archives -> nom de fichier.
-            #passer le bool à True
-            
-            archive_tags = re_archive.findall(line)
-            
-            if archive_tags != []:
-                print(line)
-                for tag in archive_tags:
-                    print(tag)
-                    pass
-                    #TODO
+            for path in zimnotes.extract_labels_filepath(line):
+                #FIXME (just filename)
+                #FIXME the key may not exist, should be handled
+                file_archives[path] = True
 
     for arch in file_archives.keys():
         if file_archives[arch] == False:
@@ -81,30 +68,43 @@ def clean_archive(zim_files, zim_archive_path):
 def usage():
     """ Print usage... """
     usage = """
-    zimarchive --cache -f ~/Notes -o ~/Archive
+    zimarchive --cache -d ~/Notes
 
     Actions:
         --cache: make a cache
-        --clean: clean the cache
-    
-    Paths:
-        -f: Zim notes directory
-        -o: Archive dirctory
-            by default, Zim_Notes_Directory/.Archive
+        Arg: 
+            -d: Zim notes directory
+        Option:
+            -f: Zim file path (Otherwise, the notebook is processed)
 
+
+        --clean: clean the cache by removing inecessary archives
+        Arg: 
+            -d: Zim notes directory
     """
 
     print(usage)
 
 
 if __name__ == '__main__':
-    log_filename = os.path.join(os.getenv('HOME'), 'zimarchivist.log')
+    try:
+        os.makedirs(os.path.expanduser('~/.zimarchivist'), exist_ok=True)
+    except:
+        print('Impossible to create ~/.zimarchivist/, Exiting...')
+        sys.exit(2)
+
+    utils.create_pidfile()
+
+    log_filename = os.path.expanduser('~/.zimarchivist/zimarchivist.log')
     logging.basicConfig(filename=log_filename, filemode='w', level=logging.DEBUG)
+
+    
     zim_root = None
     zim_archive_path = None
+    zim_file_path = None
     
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"hf:o:", ['help', 'clean', 'cache'])
+        opts, args = getopt.getopt(sys.argv[1:],"hd:f:", ['help', 'clean', 'cache'])
     except getopt.GetoptError:
         logging.critical('Wrong option')
         usage() 
@@ -118,6 +118,7 @@ if __name__ == '__main__':
         if opt in ('-h', '--help'):
             logging.debug("Option -h")
             usage()
+            sys.exit(0)
         elif opt in '--log':
             pass
             #TODO
@@ -128,23 +129,23 @@ if __name__ == '__main__':
         elif opt in '--cache':
             logging.debug("Option --cache")
             action_make_archive = True
+        elif opt in '-d':
+            logging.debug("Option -d: " + str(arg))
+            zim_root = os.path.realpath(arg) 
         elif opt in '-f':
             logging.debug("Option -f: " + str(arg))
-            zim_root = os.path.realpath(arg) 
-        elif opt in '-o':
-            logging.debug("Option -o: " + str(arg))
-            zim_archive_path = os.path.realpath(arg) 
+            zim_file_path = os.path.realpath(arg) 
 
     if action_clean_archive or action_make_archive:
         #Check if we know paths...         
         if zim_root == None:
-            logging.critical('Missing -f option. Exiting')
+            logging.critical('Missing Notebook filepath. Exiting')
             usage()
             sys.exit(2)
-        if zim_archive_path == None:
-            zim_archive_path = os.path.join(zim_root, '.Archive')
+        zim_archive_path = os.path.join(zim_root, '.Archive')
 
     if action_make_archive:
+        #Create the .Archive file
         if not (os.path.isdir(zim_archive_path)):
             try:
                 os.mkdir(zim_archive_path)
@@ -154,12 +155,27 @@ if __name__ == '__main__':
             except IOError:
                 logging.critical('could not make ', zim_archive_path)
                 sys.exit(1)
-        
-        zim_files = zimnotes.get_zim_files(zim_root)
+        if zim_file_path == None: 
+            #All file should be processed
+            zim_files = zimnotes.get_zim_files(zim_root)
     
-        logging.info('Processing zim files')
-        zimnotes.add_cache_zim_files(zim_files, zim_archive_path)
+            logging.info('Processing zim files')
+            for zim_file in zim_files:
+                zim_file_relativepath = zim_file.split(zim_root + '/')[1]
+                if timechecker.get_file_modif_status(zim_root, zim_file_relativepath):
+                    zimnotes.process_zim_file(zim_file, zim_archive_path)
+                    timechecker.set_time(zim_file_relativepath)
+        else:
+            #Only one file
+            zim_file_relativepath = zim_file_path.split(zim_root + '/')[1]
+            if timechecker.get_file_modif_status(zim_root, zim_file_relativepath):
+                zimnotes.process_zim_file(zim_file_path, zim_archive_path)
+                timechecker.set_time(zim_file_relativepath)
 
     if action_clean_archive:
+        pass
         zim_files = zimnotes.get_zim_files(zim_root)
         clean_archive(zim_files, zim_archive_path)
+
+
+    utils.release_pidfile()
