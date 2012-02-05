@@ -86,3 +86,5 @@ def make_archive(html_path, url):
                 logging.critical('could not write in ' + str(html_path) + ', leaving...') 
                 sys.exit(1)
 
+if __name__ == '__main__':
+    pass

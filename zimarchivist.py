@@ -31,34 +31,35 @@ import utils
 import timechecker
 
 
-
 #############
 # Archives
 #############
 
 #TODO split...
+import archive
 def clean_archive(zim_files, zim_archive_path):
     """ Remove archives with no entry """
    
+
     #First, we bluid a dictionary
     #to list usefull archives
     file_archives = {}
-    for filename in archive.get_archive_list(zim_archive_path): 
-        file_archives[filename] = False
+    for filepath in archive.get_archive_list(zim_archive_path): 
+        file_archives[filepath] = False
    
     re_archive = re.compile('\s\[\[.*\|\(Archive\)\]\]')
     for filename in zim_files:
         for line in open(filename, 'r'):
             for path in zimnotes.extract_labels_filepath(line):
-                #FIXME (just filename)
                 #FIXME the key may not exist, should be handled
+                path = os.path.expanduser(path)
                 file_archives[path] = True
 
     for arch in file_archives.keys():
         if file_archives[arch] == False:
             #os.remove
-            pass
-    pass
+            logging.info('remove ' + str(arch))
+            os.remove(arch)
 
 
 #############
@@ -173,7 +174,7 @@ if __name__ == '__main__':
                 timechecker.set_time(zim_file_relativepath)
 
     if action_clean_archive:
-        pass
+        logging.info('Cache cleaning')
         zim_files = zimnotes.get_zim_files(zim_root)
         clean_archive(zim_files, zim_archive_path)
 
