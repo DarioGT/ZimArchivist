@@ -29,6 +29,7 @@ import uuid
 #our libs
 from ZimArchivist import utils
 from ZimArchivist import archive
+from ZimArchivist import editline
 
 def get_zim_files(zim_root):
     """
@@ -48,39 +49,6 @@ def get_zim_files(zim_root):
     logging.debug(zim_files)
     return zim_files
 
-def add_label(html_path, url, line):
-    """
-    Add the label "Archive" to the archive after the url in the line 
-    Return the line
-    """
-    new_url = url + " [[" + utils.get_unexpanded_path(html_path) + "|(Archive)]]"
-    url = utils.protect(url)
-    line = re.sub(url, new_url, line)
-    return line
-
-def link_archive_status(url, line):
-    """ 
-    Is the url in the line already archived?
-    Basically, it checks if [[path|(Archive)]] follows the url
-    False: Not archived 
-    True: Archived
-    """
-    logging.debug('line= ' + str(line))
-    link_archived = re.compile(str(url) + '\s\[\[.*\|\(Archive\)\]\]')
-    matching = link_archived.search(line)
-    if matching == None:
-        return False
-    else:
-        return True
-
-def extract_labels_filepath(line):
-    filepaths = []
-    #First, we detect labels
-    re_archive = re.compile('\s\[\[(.+)\|\(Archive\)\]\]')
-    labels = re.findall('\s\[\[(.+?)\|\(Archive\)\]\]',line) #? is for non-greedy (minimal) fashion
-    for label in labels:
-        filepaths.append(label)
-    return filepaths
 
 def process_zim_file(zim_file, zim_archive_path):
     """
@@ -112,7 +80,7 @@ def process_zim_file(zim_file, zim_archive_path):
                 for url in urls:
                     #Is it already archived?
                     logging.debug('url: ' + str(url))
-                    if not link_archive_status(url, line):
+                    if not editline.link_archive_status(url, line):
                         file_uuid = uuid.uuid4()
                         html_file_path = os.path.join(str(zim_archive_path), str(file_uuid) + ".html" )
                         #line = make_archive(html_file_path, url, line)
@@ -125,7 +93,7 @@ def process_zim_file(zim_file, zim_archive_path):
                             #We successfully get the page
                             #We change the line
                             logging.debug('Add label')
-                            line = add_label(html_file_path, url, line)
+                            line = editline.add_label(html_file_path, url, line)
         copy.write(line)
     copy.close()
     #The new file is prepared, move it...

@@ -29,37 +29,13 @@ import logging
 from ZimArchivist import zimnotes
 from ZimArchivist import utils
 from ZimArchivist import timechecker
+from ZimArchivist import archive
 
 
 #############
 # Archives
 #############
 
-#TODO split...
-from ZimArchivist import archive
-def clean_archive(zim_files, zim_archive_path):
-    """ Remove archives with no entry """
-   
-
-    #First, we bluid a dictionary
-    #to list usefull archives
-    file_archives = {}
-    for filepath in archive.get_archive_list(zim_archive_path): 
-        file_archives[filepath] = False
-   
-    re_archive = re.compile('\s\[\[.*\|\(Archive\)\]\]')
-    for filename in zim_files:
-        for line in open(filename, 'r'):
-            for path in zimnotes.extract_labels_filepath(line):
-                #FIXME the key may not exist, should be handled
-                path = os.path.expanduser(path)
-                file_archives[path] = True
-
-    for arch in file_archives.keys():
-        if file_archives[arch] == False:
-            #os.remove
-            logging.info('remove ' + str(arch))
-            os.remove(arch)
 
 
 #############
@@ -176,7 +152,7 @@ if __name__ == '__main__':
     if action_clean_archive:
         logging.info('Cache cleaning')
         zim_files = zimnotes.get_zim_files(zim_root)
-        clean_archive(zim_files, zim_archive_path)
+        archive.clean_archive(zim_files, zim_archive_path)
 
 
     utils.release_pidfile()

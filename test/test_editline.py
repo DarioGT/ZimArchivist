@@ -2,11 +2,11 @@
 
 import unittest 
 
-from zimnotes import link_archive_status
-from zimnotes import add_label
-from zimnotes import extract_labels_filepath
+from editline import link_archive_status
+from editline import add_label
+from editline import extract_labels_filepath
 
-class TestZimnotes(unittest.TestCase):
+class TestEditline(unittest.TestCase):
 
     #Function link_archive_status
     def test_link_archive_status_OK(self):

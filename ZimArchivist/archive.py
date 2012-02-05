@@ -19,11 +19,15 @@ import logging
 import os
 import sys
 import glob
+import re
 
 #HTTP
 import urllib.request
 import socket #for exceptions
 import http.client
+
+
+from ZimArchivist import editline
 
 class URLError(Exception):
     def __init__(self):
@@ -86,5 +90,31 @@ def make_archive(html_path, url):
                 logging.critical('could not write in ' + str(html_path) + ', leaving...') 
                 sys.exit(1)
 
+
+def clean_archive(zim_files, zim_archive_path):
+    """ Remove archives with no entry """
+
+    #First, we bluid a dictionary
+    #to list usefull archives
+    file_archives = {}
+    for filepath in get_archive_list(zim_archive_path): 
+        file_archives[filepath] = False
+   
+    re_archive = re.compile('\s\[\[.*\|\(Archive\)\]\]')
+    for filename in zim_files:
+        for line in open(filename, 'r'):
+            for path in editline.extract_labels_filepath(line):
+                #FIXME the key may not exist, should be handled
+                path = os.path.expanduser(path)
+                file_archives[path] = True
+
+    for arch in file_archives.keys():
+        if file_archives[arch] == False:
+            #os.remove
+            logging.info('remove ' + str(arch))
+            os.remove(arch)
+
+                
+                
 if __name__ == '__main__':
     pass
