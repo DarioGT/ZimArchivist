@@ -27,8 +27,8 @@ import uuid
 
 
 #our libs
-import utils
-import archive
+from ZimArchivist import utils
+from ZimArchivist import archive
 
 def get_zim_files(zim_root):
     """
@@ -120,8 +120,7 @@ def process_zim_file(zim_file, zim_archive_path):
                             archive.make_archive(html_file_path, url)
                         except archive.URLError:
                             #TODO
-                            print('ERROR')
-                            #pass
+                            pass
                         else:
                             #We successfully get the page
                             #We change the line

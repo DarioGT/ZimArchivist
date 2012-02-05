@@ -26,9 +26,9 @@ import logging
 
 
 #our lib...
-import zimnotes
-import utils
-import timechecker
+from ZimArchivist import zimnotes
+from ZimArchivist import utils
+from ZimArchivist import timechecker
 
 
 #############
@@ -36,7 +36,7 @@ import timechecker
 #############
 
 #TODO split...
-import archive
+from ZimArchivist import archive
 def clean_archive(zim_files, zim_archive_path):
     """ Remove archives with no entry """
    
