@@ -36,7 +36,7 @@ def link_archive_status(url, line):
     True: Archived
     """
     logging.debug('line= ' + str(line))
-    link_archived = re.compile(str(url) + '\s\[\[.*\|\(Archive\)\]\]')
+    link_archived = re.compile(utils.protect(url) + '\s\[\[.*\|\(Archive\)\]\]')
     matching = link_archived.search(line)
     if matching == None:
         return False
@@ -47,7 +47,7 @@ def extract_labels_filepath(line):
     filepaths = []
     #First, we detect labels
     re_archive = re.compile('\s\[\[(.+)\|\(Archive\)\]\]')
-    labels = re.findall('\s\[\[(.+?)\|\(Archive\)\]\]',line) #? is for non-greedy (minimal) fashion
+    labels = re.findall('\s\[\[(.+?)\|\(Archive\)\]\]', line) #? is for non-greedy (minimal) fashion
     for label in labels:
         filepaths.append(label)
     return filepaths

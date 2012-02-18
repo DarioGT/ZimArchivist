@@ -56,7 +56,7 @@ def process_zim_file(zim_file, zim_archive_path):
     Look for links
     Archive links when necessary
     """
-    link = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+    link = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#~]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
     begin_noarchive = re.compile('\{noarchive\}')
     end_noarchive = re.compile('\{\/noarchive\}')
 
