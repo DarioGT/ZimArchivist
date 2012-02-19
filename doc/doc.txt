@@ -50,6 +50,7 @@ If you want to stop this behaviour, write
 
 ZimArchivist first get the last modification date of each zimfile.
 If it is known that no modification occurs after the last caching process, nothing is done.
+This behavior could be override by adding the option --no-timecheck
 
 Logfiles, pid files and other internal files are stored in ~/.zimarchivist/
 
@@ -66,6 +67,8 @@ Thus, my paths work on every systems.
 I don't think so. I'm using it every day and I didn't see any drawback.
 The thing you should know is that Zim does not reload the notebook when a file is modified.
 This means you can have a conflict if you continue to edit your notes after a cache process.
+Hopefully, this will be fixed soon. See https://bugs.launchpad.net/zim/+bug/792058 for more information.
+
 
 Moreover, I keep track of my notes in a git repository. So, I can revert if something goes wrong.
 You can do the same.

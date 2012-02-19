@@ -45,7 +45,7 @@ from ZimArchivist import archive
 def usage():
     """ Print usage... """
     usage = """
-    zimarchive --cache -d ~/Notes
+    zimarchivist --cache -d ~/Notes
 
     Actions:
         --cache: make a cache
@@ -55,9 +55,13 @@ def usage():
             -f: Zim file path (Otherwise, the notebook is processed)
 
 
-        --clean: clean the cache by removing inecessary archives
+        --clean: clean the cache by removing unnecessary archives
         Arg: 
             -d: Zim notes directory
+
+     Other options:
+        --no-timecheck: Do not check if zim file has been modified
+                        since the last time.
     """
 
     print(usage)
@@ -90,6 +94,7 @@ if __name__ == '__main__':
         
     action_make_archive = False
     action_clean_archive = False
+    checktime = True
         
     for opt, arg in opts:   
         if opt in ('-h', '--help'):
@@ -106,6 +111,9 @@ if __name__ == '__main__':
         elif opt in '--cache':
             logging.debug("Option --cache")
             action_make_archive = True
+        elif opt in '--no-timecheck':
+            logging.debug("Option --no-timecheck")
+            checktime = False
         elif opt in '-d':
             logging.debug("Option -d: " + str(arg))
             zim_root = os.path.realpath(arg) 
@@ -139,15 +147,26 @@ if __name__ == '__main__':
             logging.info('Processing zim files')
             for zim_file in zim_files:
                 zim_file_relativepath = zim_file.split(zim_root + '/')[1]
-                if timechecker.get_file_modif_status(zim_root, zim_file_relativepath):
+                if timechecker.get_file_modif_status(zim_root, zim_file_relativepath) and checktime:
                     zimnotes.process_zim_file(zim_file, zim_archive_path)
+                    timechecker.set_time(zim_file_relativepath)
+                else not checktime:
+                    logging.debug('Not modified in the mean time: ' + str(zim_file_path))
+                    zimnotes.process_zim_file(zim_file_path, zim_archive_path)
                     timechecker.set_time(zim_file_relativepath)
         else:
             #Only one file
+            logging.info('Processing zim file ' + str(zim_file_path))
             zim_file_relativepath = zim_file_path.split(zim_root + '/')[1]
-            if timechecker.get_file_modif_status(zim_root, zim_file_relativepath):
+            if timechecker.get_file_modif_status(zim_root, zim_file_relativepath) and checktime:
                 zimnotes.process_zim_file(zim_file_path, zim_archive_path)
                 timechecker.set_time(zim_file_relativepath)
+            elif not checktime:
+                logging.debug('Not modified in the mean time: ' + str(zim_file_path))
+                zimnotes.process_zim_file(zim_file_path, zim_archive_path)
+                timechecker.set_time(zim_file_relativepath)
+
+
 
     if action_clean_archive:
         logging.info('Cache cleaning')

@@ -87,6 +87,7 @@ def process_zim_file(zim_file, zim_archive_path):
                         try:
                             archive.make_archive(html_file_path, url)
                         except archive.URLError:
+                            logging.error('URLError: ' + str(url))
                             #TODO
                             pass
                         else:

@@ -10,8 +10,8 @@ class TestEditline(unittest.TestCase):
 
     #Function link_archive_status
     def test_link_archive_status_OK(self):
-        url = 'http://www.toto.org/article?=123'
-        line = 'A nice line with http://www.toto.org/article?=123 [[/a/great/path/file.html|(Archive)]]'
+        url = 'http://www.to-to.org/article?=123'
+        line = 'A nice line with http://www.to-to.org/article?=123 [[/a/great/path/file.html|(Archive)]]'
         result = link_archive_status(url, line)
         self.assertTrue(result)
 
