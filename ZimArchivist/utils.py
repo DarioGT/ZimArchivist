@@ -24,6 +24,9 @@ import os
 def protect(s):
     """Protect Metacaracters in a string"""
     s = re.sub('\&', '\\\&', s)
+    s = re.sub('\[', '\\\[', s)
+    s = re.sub('\]', '\\\]', s)
+    s = re.sub('\|', '\\\|', s)
     s = re.sub('\?', '\\\?', s)
     return s
 

@@ -23,9 +23,18 @@ def add_label(html_path, url, line):
     Add the label "Archive" to the archive after the url in the line 
     Return the line
     """
-    new_url = url + " [[" + utils.get_unexpanded_path(html_path) + "|(Archive)]]"
-    url = utils.protect(url)
-    line = re.sub(url, new_url, line)
+    integrated_link = re.compile('\[\[' + utils.protect(url) + '(\|.*\]\])')
+    matching = integrated_link.search(line)
+    if matching == None:
+        #It is not an integrated link
+        effective_pattern = url
+        new_url = effective_pattern + " [[" + utils.get_unexpanded_path(html_path) + "|(Archive)]]"
+    else:
+        #It is...
+        effective_pattern = '[[' + url + matching.groups()[0]
+        new_url = effective_pattern + " [[" + utils.get_unexpanded_path(html_path) + "|(Archive)]]" 
+    effective_pattern = utils.protect(effective_pattern)
+    line = re.sub(effective_pattern, new_url, line)
     return line
 
 def link_archive_status(url, line):
@@ -35,8 +44,8 @@ def link_archive_status(url, line):
     False: Not archived 
     True: Archived
     """
-    logging.debug('line= ' + str(line))
-    link_archived = re.compile(utils.protect(url) + '\s\[\[.*\|\(Archive\)\]\]')
+    logging.debug('line: ' + str(line))
+    link_archived = re.compile(utils.protect(url) + '(\|.*\]\])?\s\[\[.*\|\(Archive\)\]\]')
     matching = link_archived.search(line)
     if matching == None:
         return False

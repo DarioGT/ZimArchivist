@@ -21,6 +21,18 @@ class TestEditline(unittest.TestCase):
         result = link_archive_status(url, line)
         self.assertFalse(result)
 
+    def test_integrated_link_archive_status_OK(self):
+        url = 'http://www.to-to.org/article?=123'
+        line = 'A nice line with [[http://www.to-to.org/article?=123|link]] [[/a/great/path/file.html|(Archive)]]'
+        result = link_archive_status(url, line)
+        self.assertTrue(result)
+
+    def test_integrated_link_archive_status_NO(self):
+        url = 'http://www.toto.org'
+        line = 'A nice line with [[http://www.toto.org|link]] Another info'
+        result = link_archive_status(url, line)
+        self.assertFalse(result)
+
     #Function add_label
     def test_simple_url(self):
         result = add_label('toto.html', 'http://www.google.fr', 'Link : http://www.google.fr a Comment')
@@ -44,6 +56,10 @@ class TestEditline(unittest.TestCase):
         result = add_label('toto.html', link, link)
         print(result)
         self.assertEqual(result, link + ' [[toto.html|(Archive)]]')
+
+    def test_integrated_url(self):
+        result = add_label('toto.html', 'https://www.google.fr', 'Link : [[https://www.google.fr|link]] a Comment')
+        self.assertEqual(result, 'Link : [[https://www.google.fr|link]] [[toto.html|(Archive)]] a Comment')
 
     #Function extract_labels_filepath
     def test_extraction_simple(self):
