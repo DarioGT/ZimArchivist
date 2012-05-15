@@ -16,7 +16,7 @@
 import re
 import logging
 from ZimArchivist import utils
-
+#from ZimArchivist import archive
 
 def add_label(html_path, url, line):
     """
@@ -60,3 +60,6 @@ def extract_labels_filepath(line):
     for label in labels:
         filepaths.append(label)
     return filepaths
+
+
+    

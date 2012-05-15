@@ -6,6 +6,7 @@ from editline import link_archive_status
 from editline import add_label
 from editline import extract_labels_filepath
 
+
 class TestEditline(unittest.TestCase):
 
     #Function link_archive_status
@@ -71,8 +72,7 @@ class TestEditline(unittest.TestCase):
         result = extract_labels_filepath(line)
         self.assertEqual(result, ['~/Notes/.Archive/aa.html', '~/Notes/.Archive/bb.html'])
         
-        
-        
+       
 
 if __name__ == '__main__':
     unittest.main()
