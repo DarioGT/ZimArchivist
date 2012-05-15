@@ -43,14 +43,11 @@ From time to time, you could desire to avoid archiving.
 Everything below the tag
 {noarchive}
 will be ignored.
+http://www.foo.org
 If you want to stop this behaviour, write
 {/noarchive}
 
-Known issues:
-Stuffs written on lines containing tags are not properly interpreted toward the tag itself.
-In short, avoid to write
-{noarchive} http://www.myling.org {/noarchive}
-this will be archived until I correct the issue.
+or on a single line {noarchive} http://www.bar.org {/noarchive} like that.
 
 ## Things you may want to know 
 
