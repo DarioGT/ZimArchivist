@@ -128,6 +128,9 @@ if __name__ == '__main__':
             usage()
             sys.exit(2)
         zim_archive_path = os.path.join(zim_root, '.Archive')
+    else:
+        usage()
+        sys.exit(2)
 
     if action_make_archive:
         #Create the .Archive file
@@ -150,19 +153,19 @@ if __name__ == '__main__':
                 if timechecker.get_file_modif_status(zim_root, zim_file_relativepath) and checktime:
                     zimnotes.process_zim_file(zim_file, zim_archive_path)
                     timechecker.set_time(zim_file_relativepath)
-                else not checktime:
-                    logging.debug('Not modified in the mean time: ' + str(zim_file_path))
+                elif not checktime: 
+                    logging.debug('Not modified since the last check: ' + str(zim_file_path))
                     zimnotes.process_zim_file(zim_file_path, zim_archive_path)
                     timechecker.set_time(zim_file_relativepath)
         else:
             #Only one file
-            logging.info('Processing zim file ' + str(zim_file_path))
+            logging.info('Processing zim file: ' + str(zim_file_path))
             zim_file_relativepath = zim_file_path.split(zim_root + '/')[1]
             if timechecker.get_file_modif_status(zim_root, zim_file_relativepath) and checktime:
                 zimnotes.process_zim_file(zim_file_path, zim_archive_path)
                 timechecker.set_time(zim_file_relativepath)
             elif not checktime:
-                logging.debug('Not modified in the mean time: ' + str(zim_file_path))
+                logging.debug('Not modified since the last check: ' + str(zim_file_path))
                 zimnotes.process_zim_file(zim_file_path, zim_archive_path)
                 timechecker.set_time(zim_file_relativepath)
 
