@@ -105,16 +105,13 @@ def get_zim_files(zim_root):
 
 
 def process_zim_file(zim_file, zim_archive_path):
-    print('read')
     #read
     thefile = open(zim_file, 'r')
     original_text = thefile.read()
     thefile.close()
     
-    print('process')
     #process
     new_text = processtext.process_text(original_text, zim_archive_path)
-    print(new_text)
     
     #write
     thefile = open(zim_file, 'w')
