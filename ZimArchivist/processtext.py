@@ -28,7 +28,7 @@ def strip_noarchive(text):
     {/noarchive}
     and the tags
     """
-    text = re.sub('\{noarchive\}(\n|.)*?\{\/noarchive\}', '', text) #re.DOTALL ? FIXME
+    text = re.sub('\{noarchive\}(\n|.)*?\{\/noarchive\}', '', text) #re.DOTALL buggy? FIXME
     return text
 
     
@@ -59,11 +59,9 @@ def process_text(original_text, zim_archive_path):
                 #We successfully get the page
                 #We change the line
                 logging.debug('Add label')
-                
                 original_text = editline.add_label(html_file_path, url, original_text)
         else:
             logging.debug('Already archived')
-    
     return original_text
 
     
