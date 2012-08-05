@@ -8,6 +8,11 @@ Just click on it, it will be opened in your broswer.
 # What is the license?
 GNU GPL v3 or later.
 
+# What are the dependencies?
+- python 3
+- BeautifulSoup 4
+- ...
+
 # How to run ZimArchivist?
 There is two ways to use ZimArchivist.
 
