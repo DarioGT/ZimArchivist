@@ -50,9 +50,9 @@ def process_text(original_text, zim_archive_path):
             file_uuid = uuid.uuid4()
             html_file_path = os.path.join(str(zim_archive_path), str(file_uuid) + ".html" )
             try:
-                archive.make_archive(html_file_path, url)
+                #archive.make_archive(html_file_path, url)
                 #new version:
-                #archive.make_archive_thread(zim_archive_path, file_uuid, url)
+                archive.make_archive_thread(zim_archive_path, file_uuid, url)
             except archive.URLError:
                 logging.error('URLError: ' + str(url))
                 #TODO

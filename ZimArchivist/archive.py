@@ -26,6 +26,13 @@ import urllib.request
 import socket #for exceptions
 import http.client
 
+#TODO remove unecessary libs
+from bs4 import BeautifulSoup as bs
+import urllib.parse as urlparse
+from urllib.request import urlopen, urlretrieve
+import os
+import os.path
+
 
 from ZimArchivist import editline
 
@@ -116,13 +123,13 @@ def make_archive_thread(html_path, uuid, url):
             import random
             number = random.random() #Another choice ?
             original_filename = img["src"].split("/")[-1]
-            new_filename = uuid + '-' + str(number) + str(os.path.splitext(original_filename)[1])
+            new_filename = str(uuid) + '-' + str(number) + str(os.path.splitext(original_filename)[1])
             parsed[2] = img["src"]
             
             print('thread: ' + str(i) + '--> ' + original_filename + '--' + str(number))
             #Directory for pictures
-            pic_dir = os.path.join(html_path, uuid)
-            if not os.path.isdir(pic_dir):
+            pic_dir = os.path.join(html_path, str(uuid))
+            if not os.path.exists(pic_dir):
                 os.mkdir(pic_dir)
             outpath = os.path.join(pic_dir, new_filename) 
 
@@ -150,7 +157,7 @@ def make_archive_thread(html_path, uuid, url):
     print('waiting')
     img_queue.join()
     print('done')
-    html_file = os.path.join(html_path, uuid + '.html')
+    html_file = os.path.join(html_path, str(uuid) + '.html')
     with open(html_file, 'w') as htmlfile: 
         htmlfile.write(soup.prettify())
 
