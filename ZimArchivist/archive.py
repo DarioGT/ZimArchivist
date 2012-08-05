@@ -90,6 +90,70 @@ def make_archive(html_path, url):
                 logging.critical('could not write in ' + str(html_path) + ', leaving...') 
                 sys.exit(1)
 
+                
+                
+def make_archive_thread(html_path, uuid, url):
+    """
+    Download the url in html_path
+    and everything is named uuid
+    """
+    #TODO deals with URLError
+    from queue import Queue
+    from threading import Thread
+    
+    logging.debug('get ' + url)
+    #Open the url
+    soup = bs(urlopen(url))
+    #Parsed url
+    parsed = list(urlparse.urlparse(url))
+
+    img_queue = Queue()
+    number_of_threads = 10
+
+    def download_img_worker(i, image):
+        while True:
+            img = image.get()
+            import random
+            number = random.random() #Another choice ?
+            original_filename = img["src"].split("/")[-1]
+            new_filename = uuid + '-' + str(number) + str(os.path.splitext(original_filename)[1])
+            parsed[2] = img["src"]
+            
+            print('thread: ' + str(i) + '--> ' + original_filename + '--' + str(number))
+            #Directory for pictures
+            pic_dir = os.path.join(html_path, uuid)
+            if not os.path.isdir(pic_dir):
+                os.mkdir(pic_dir)
+            outpath = os.path.join(pic_dir, new_filename) 
+
+            #if src start with http...
+            if img["src"].lower().startswith("http"):
+                urlretrieve(img["src"], outpath)
+            #else
+            else:
+                urlretrieve(urlparse.urlunparse(parsed), outpath)
+            img["src"] = outpath
+            #end...
+            image.task_done()
+
+    #Set up threads
+    for thread in range(number_of_threads):
+        worker = Thread(target=download_img_worker, args=(thread, img_queue))
+        worker.setDaemon(True)
+        worker.start()
+
+    #Download images
+    for img in soup.findAll("img"):
+        img_queue.put(img)
+
+    #wait all the threads...
+    print('waiting')
+    img_queue.join()
+    print('done')
+    html_file = os.path.join(html_path, uuid + '.html')
+    with open(html_file, 'w') as htmlfile: 
+        htmlfile.write(soup.prettify())
+
 
 def clean_archive(zim_files, zim_archive_path):
     """ Remove archives with no entry """
