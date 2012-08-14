@@ -145,31 +145,27 @@ if __name__ == '__main__':
             except IOError:
                 logging.critical('could not make ', zim_archive_path)
                 sys.exit(1)
+        
+        
         if zim_file_path == None: 
-            #All file should be processed
             zim_files = zimnotes.get_zim_files(zim_root)
-    
-            logging.info('Processing zim files')
-            for zim_file in zim_files:
-                zim_file_relativepath = zim_file.split(zim_root + '/')[1]
-                if timechecker.get_file_modif_status(zim_root, zim_file_relativepath) and checktime:
-                    zimnotes.process_zim_file(zim_file, zim_archive_path)
-                    timechecker.set_time(zim_file_relativepath)
-                elif not checktime: 
-                    logging.debug('Not modified since the last check: ' + str(zim_file_path))
-                    zimnotes.process_zim_file(zim_file_path, zim_archive_path)
-                    timechecker.set_time(zim_file_relativepath)
         else:
-            #Only one file
-            logging.info('Processing zim file: ' + str(zim_file_path))
-            zim_file_relativepath = zim_file_path.split(zim_root + '/')[1]
+            zim_files = [zim_file_path]
+
+        #TODO : this block must be replaced by threads to 
+        #improve the speed.
+        logging.info('Processing zim files')
+        for zim_file in zim_files:
+            zim_file_relativepath = zim_file.split(zim_root + '/')[1]
             if timechecker.get_file_modif_status(zim_root, zim_file_relativepath) and checktime:
-                zimnotes.process_zim_file(zim_file_path, zim_archive_path)
+                zimnotes.process_zim_file(zim_file, zim_archive_path)
                 timechecker.set_time(zim_file_relativepath)
-            elif not checktime:
+            elif not checktime: 
                 logging.debug('Not modified since the last check: ' + str(zim_file_path))
                 zimnotes.process_zim_file(zim_file_path, zim_archive_path)
                 timechecker.set_time(zim_file_relativepath)
+            else:
+                logging.debug('Not modified since the last check: ' + str(zim_file_path))
 
 
 
