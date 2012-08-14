@@ -150,17 +150,19 @@ if __name__ == '__main__':
         #TODO : this block must be replaced by threads to 
         #improve the speed.
         logging.info('Processing zim files')
-        for zim_file in zim_files:
-            zim_file_relativepath = zim_file.split(zim_root + '/')[1]
-            if timechecker.get_file_modif_status(zim_root, zim_file_relativepath) and checktime:
-                zimnotes.process_zim_file(zim_file, zim_archive_path)
-                timechecker.set_time(zim_file_relativepath)
-            elif not checktime: 
-                logging.debug('Not modified since the last check: ' + str(zim_file_path))
-                zimnotes.process_zim_file(zim_file_path, zim_archive_path)
-                timechecker.set_time(zim_file_relativepath)
-            else:
-                logging.debug('Not modified since the last check: ' + str(zim_file_path))
+        zimnotes.process_zim_file(zim_root, zim_files, zim_archive_path, checktime)
+
+        #for zim_file in zim_files:
+        #    zim_file_relativepath = zim_file.split(zim_root + '/')[1]
+        #    if timechecker.get_file_modif_status(zim_root, zim_file_relativepath) and checktime:
+        #        zimnotes.process_zim_file(zim_file, zim_archive_path)
+        #        timechecker.set_time(zim_file_relativepath)
+        #    elif not checktime: 
+        #        logging.debug('Not modified since the last check: ' + str(zim_file_path))
+        #        zimnotes.process_zim_file(zim_file_path, zim_archive_path)
+        #        timechecker.set_time(zim_file_relativepath)
+        #    else:
+        #        logging.debug('Not modified since the last check: ' + str(zim_file_path))
 
 
 

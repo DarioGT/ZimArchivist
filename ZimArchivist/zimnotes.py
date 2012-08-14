@@ -31,6 +31,7 @@ from ZimArchivist import utils
 #from ZimArchivist import archive
 #from ZimArchivist import editline
 from ZimArchivist import processtext
+from ZimArchivist import timechecker
 
 def get_zim_files(zim_root):
     """
@@ -50,7 +51,7 @@ def get_zim_files(zim_root):
     logging.debug(zim_files)
     return zim_files
 
-def process_zim_file(zim_file, zim_archive_path):
+def process_zim_file_old(zim_file, zim_archive_path):
     """
     Read the zim file
     Look for links
@@ -69,8 +70,83 @@ def process_zim_file(zim_file, zim_archive_path):
     thefile = open(zim_file, 'w')
     thefile.write(new_text)
     thefile.close()
+
+
+import threading
+from queue import Queue
+
+class ThreadZimfiles(threading.Thread):
+    """
+    Process Zim files to create archives
+    """
+    def __init__(self, zim_file_queue, zim_root, zim_archive_path):
+        """
+        Constructor
+        """
+        threading.Thread.__init__(self)
+        self.zim_file_queue = zim_file_queue
+        self.zim_root = zim_root
+        self.zim_archive_path = zim_archive_path
     
-    
+    def run(self):
+        """ Job: 
+        Read the zim file
+        Look for links
+        Archive links when necessary
+        """
+        while True:
+            zim_file = self.zim_file_queue.get()
+            print(zim_file)
+            #read
+            #FIXME exception IO
+            thefile = open(zim_file, 'r')
+            original_text = thefile.read()
+            thefile.close()
+            
+            #process
+            new_text = processtext.process_text(original_text, self.zim_archive_path)
+            
+            #write
+            #FIXME exception IO
+            thefile = open(zim_file, 'w')
+            thefile.write(new_text)
+            thefile.close()
+
+            #Update time
+            relativepath = zim_file.split(self.zim_root + '/')[1]
+            timechecker.set_time(relativepath)
+
+            #Done
+            self.zim_file_queue.task_done()
+
+def process_zim_file(zim_root, zim_files, zim_archive_path, checktime=True):
+    """
+    Archive links in zim_files
+    """
+
+    file_queue = Queue()
+    number_of_threads = 3
+
+    #Set up threads
+    for thread in range(number_of_threads):
+        worker = ThreadZimfiles(file_queue, zim_root, zim_archive_path)
+        worker.setDaemon(True)
+        worker.start()
+
+    for thisfile in zim_files:
+        thisfile_relativepath = thisfile.split(zim_root + '/')[1]
+        if timechecker.get_file_modif_status(zim_root, thisfile_relativepath) and checktime:
+            #This zimfile has been updated, do it
+            file_queue.put(thisfile)
+        elif not checktime: 
+            #We don't check time, do it
+            file_queue.put(thisfile)
+        else:
+            #Nothing to do
+            pass
+
+    file_queue.join()
+
 if __name__ == '__main__':
     #TODO doctest
     pass

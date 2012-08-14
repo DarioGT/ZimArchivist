@@ -4,6 +4,8 @@
 * Improve {noarchive} tags behavior
 * Minor usage improvements
 * Download images
+* Threads for downloading pictures
+* Threads for processing zimfiles
 
 ##################
 # v0.1 2012-04-15

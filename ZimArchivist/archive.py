@@ -88,12 +88,18 @@ class ThreadImg(threading.Thread):
             self.lock.release()
             outpath = os.path.join(pic_dir, new_filename) 
 
-            #if src start with http...
-            if img["src"].lower().startswith("http"):
-               urlretrieve(img["src"], outpath)
-            #else
-            else:
-                urlretrieve(urlparse.urlunparse(self.parsed), outpath)
+            try:
+                #if src start with http...
+                if img["src"].lower().startswith("http"):
+                    urlretrieve(img["src"], outpath)
+                #else
+                else:
+                        urlretrieve(urlparse.urlunparse(self.parsed), outpath)
+            except ValueError:
+                #Some links raise ValueError 
+                #I don't know what I can do
+                print('ValueError Fetchlink')
+                pass
             img["src"] = os.path.relpath(outpath, self.htmlpath) # rel path
             #end...
             self.queue.task_done()
@@ -239,7 +245,7 @@ def make_archive_thread(html_path, uuid, url):
     parsed = list(urlparse.urlparse(url))
 
     img_queue = Queue()
-    number_of_threads = 10
+    number_of_threads = 4
     lock = threading.Lock()
 
     #Set up threads
