@@ -34,11 +34,6 @@ from ZimArchivist import timechecker
 from ZimArchivist import archive
 
 
-#############
-# Archives
-#############
-
-
 
 #############
 # Main
