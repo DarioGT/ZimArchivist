@@ -19,5 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 # Dependences
 python3
 
+# ZimArchivist
+ZimArchivist is designed for your Zim wiki: zim-wiki.org
+It makes copies of your links in your notes on your disk.
+
 # How to use this tool?
 See doc/
