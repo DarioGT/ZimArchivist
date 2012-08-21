@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*-
 #This program is free software: you can redistribute it and/or modify
 #it under the terms of the GNU General Public License as published by
 #the Free Software Foundation, either version 3 of the License, or
@@ -44,8 +44,6 @@ class URLError(Exception):
 
 import threading
 import random
-import os.path
-import os
 from queue import Queue
 
 class ThreadImg(threading.Thread):
@@ -74,10 +72,11 @@ class ThreadImg(threading.Thread):
         while True:
             img = self.queue.get()
 
+
             number = random.random() #Another choice ?
             original_filename = img["src"].split("/")[-1]
             new_filename = str(self.uuid) + '-' + str(number) + str(os.path.splitext(original_filename)[1])
-            self.parsed[2] = img["src"]
+
             
             print('thread: ' + '--> ' + original_filename + '--' + str(number))
             #Directory for pictures
@@ -91,15 +90,19 @@ class ThreadImg(threading.Thread):
             try:
                 #if src start with http...
                 if img["src"].lower().startswith("http"):
-                    urlretrieve(img["src"], outpath)
-                #else
+                    urlretrieve(img["src"], outpath) #too simple, just fetch it!
                 else:
-                        urlretrieve(urlparse.urlunparse(self.parsed), outpath)
-            except ValueError:
-                #Some links raise ValueError 
-                #I don't know what I can do
-                print('ValueError Fetchlink')
-                pass
+                        #We add the relative path
+                        #ex: http://toto.org/dir/page.html which contains 'picture.png'
+                        #-> the path is dir/picture.png
+                        import copy
+                        current_parsed = copy.copy(self.parsed)
+                        current_parsed[2] = os.path.join(os.path.split(self.parsed[2])[0], img["src"])
+                        urlretrieve(urlparse.urlunparse(current_parsed), outpath)
+            except ValueError as e:
+                #Normally OK, but...
+                #Some links can raise ValueError
+                print('ValueError Fetchlink ' + str(e))
             img["src"] = os.path.relpath(outpath, self.htmlpath) # rel path
             #end...
             self.queue.task_done()
