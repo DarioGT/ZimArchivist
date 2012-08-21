@@ -74,7 +74,7 @@ class ThreadImg(threading.Thread):
 
 
             number = random.random() #Another choice ?
-            original_filename = img["src"].split("/")[-1]
+            original_filename = img["src"].split("/")[-1].split('?')[0]
             new_filename = str(self.uuid) + '-' + str(number) + str(os.path.splitext(original_filename)[1])
 
             
@@ -170,70 +170,73 @@ def make_archive(html_path, url):
 
                 
                 
-def make_archive_thread_old(html_path, uuid, url):
-    """
-    Download the url in html_path
-    and everything is named uuid
-    """
-    #TODO deals with URLError
-    from queue import Queue
-    from threading import Thread, Lock
-    
-    logging.debug('get ' + url)
-    #Open the url
-    soup = bs(urlopen(url))
-    #Parsed url
-    parsed = list(urlparse.urlparse(url))
-
-    img_queue = Queue()
-    number_of_threads = 10
-
-    def download_img_worker(i, lock, image):
-        while True:
-            img = image.get()
-            import random
-            number = random.random() #Another choice ?
-            original_filename = img["src"].split("/")[-1]
-            new_filename = str(uuid) + '-' + str(number) + str(os.path.splitext(original_filename)[1])
-            parsed[2] = img["src"]
-            
-            print('thread: ' + str(i) + '--> ' + original_filename + '--' + str(number))
-            #Directory for pictures
-            pic_dir = os.path.join(html_path, str(uuid))
-            lock.acquire()
-            if not os.path.exists(pic_dir):
-                os.mkdir(pic_dir)
-            lock.release()
-            outpath = os.path.join(pic_dir, new_filename) 
-
-            #if src start with http...
-            if img["src"].lower().startswith("http"):
-               urlretrieve(img["src"], outpath)
-            #else
-            else:
-                urlretrieve(urlparse.urlunparse(parsed), outpath)
-            img["src"] = os.path.relpath(outpath, html_path) # rel path
-            #end...
-            image.task_done()
-
-    #Set up threads
-    lock = Lock()
-    for thread in range(number_of_threads):
-        worker = Thread(target=download_img_worker, args=(thread, lock, img_queue))
-        worker.setDaemon(True)
-        worker.start()
-
-    #Download images
-    for img in soup.findAll("img"):
-        img_queue.put(img)
-
-    #wait all the threads...
-    print('waiting')
-    img_queue.join()
-    print('done')
-    html_file = os.path.join(html_path, str(uuid) + '.html')
-    with open(html_file, 'w') as htmlfile: 
-        htmlfile.write(soup.prettify())
+#def make_archive_thread_old(html_path, uuid, url):
+#    """
+#    Download the url in html_path
+#    and everything is named uuid
+#    """
+#    #TODO deals with URLError
+#    from queue import Queue
+#    from threading import Thread, Lock
+#    
+#    logging.debug('get ' + url)
+#    #Open the url
+#    soup = bs(urlopen(url))
+#    #Parsed url
+#    parsed = list(urlparse.urlparse(url))
+#
+#    img_queue = Queue()
+#    number_of_threads = 1
+#
+#    def download_img_worker(i, lock, image):
+#        while True:
+#            img = image.get()
+#            import random
+#            number = random.random() #Another choice ?
+#            original_filename = img["src"].split("/")[-1]
+#            print(original_filename)
+#            original_filename = original_filename.split("\?")[0]
+#            print(original_filename)
+#            new_filename = str(uuid) + '-' + str(number) + str(os.path.splitext(original_filename)[1])
+#            parsed[2] = img["src"]
+#            
+#            print('thread: ' + str(i) + '--> ' + original_filename + '---' + str(number))
+#            #Directory for pictures
+#            pic_dir = os.path.join(html_path, str(uuid))
+#            lock.acquire()
+#            if not os.path.exists(pic_dir):
+#                os.mkdir(pic_dir)
+#            lock.release()
+#            outpath = os.path.join(pic_dir, new_filename) 
+#
+#            #if src start with http...
+#            if img["src"].lower().startswith("http"):
+#               urlretrieve(img["src"], outpath)
+#            #else
+#            else:
+#                urlretrieve(urlparse.urlunparse(parsed), outpath)
+#            img["src"] = os.path.relpath(outpath, html_path) # rel path
+#            #end...
+#            image.task_done()
+#
+#    #Set up threads
+#    lock = Lock()
+#    for thread in range(number_of_threads):
+#        worker = Thread(target=download_img_worker, args=(thread, lock, img_queue))
+#        worker.setDaemon(True)
+#        worker.start()
+#
+#    #Download images
+#    for img in soup.findAll("img"):
+#        img_queue.put(img)
+#
+#    #wait all the threads...
+#    print('waiting')
+#    img_queue.join()
+#    print('done')
+#    html_file = os.path.join(html_path, str(uuid) + '.html')
+#    with open(html_file, 'w') as htmlfile: 
+#        htmlfile.write(soup.prettify())
 
 
 def make_archive_thread(html_path, uuid, url):
