@@ -103,6 +103,7 @@ class ThreadImg(threading.Thread):
                 #Normally OK, but...
                 #Some links can raise ValueError
                 print('ValueError Fetchlink ' + str(e))
+                print(current_parsed)
             img["src"] = os.path.relpath(outpath, self.htmlpath) # rel path
             #end...
             self.queue.task_done()
@@ -246,7 +247,12 @@ def make_archive_thread(html_path, uuid, url):
     """
     logging.debug('get ' + url)
     #Open the url
-    soup = bs(urlopen(url))
+    try:
+        soup = bs(urlopen(url))
+    except urllib.error.HTTPError:
+        print('could not open ' + str(url))
+        # raise an error to do not add internal link in zim notes
+        raise URLError
     #Parsed url
     parsed = list(urlparse.urlparse(url))
 
