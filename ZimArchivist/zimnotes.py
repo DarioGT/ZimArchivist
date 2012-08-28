@@ -51,25 +51,25 @@ def get_zim_files(zim_root):
     logging.debug(zim_files)
     return zim_files
 
-def process_zim_file_old(zim_file, zim_archive_path):
-    """
-    Read the zim file
-    Look for links
-    Archive links when necessary
-    """
-    #read
-    thefile = open(zim_file, 'r')
-    original_text = thefile.read()
-    thefile.close()
-    
-    #process
-    new_text = processtext.process_text(original_text, zim_archive_path)
-    
-    #write
-    #TODO compare original and old file
-    thefile = open(zim_file, 'w')
-    thefile.write(new_text)
-    thefile.close()
+#def process_zim_file_old(zim_file, zim_archive_path):
+#    """
+#    Read the zim file
+#    Look for links
+#    Archive links when necessary
+#    """
+#    #read
+#    thefile = open(zim_file, 'r')
+#    original_text = thefile.read()
+#    thefile.close()
+#    
+#    #process
+#    new_text = processtext.process_text(original_text, zim_archive_path)
+#    
+#    #write
+#    #TODO compare original and old file
+#    thefile = open(zim_file, 'w')
+#    thefile.write(new_text)
+#    thefile.close()
 
 
 import threading
@@ -119,16 +119,15 @@ class ThreadZimfiles(threading.Thread):
             #Done
             self.zim_file_queue.task_done()
 
-def process_zim_file(zim_root, zim_files, zim_archive_path, checktime=True):
+def process_zim_file(zim_root, zim_files, zim_archive_path, checktime=True, num_thread=3):
     """
     Archive links in zim_files
     """
 
     file_queue = Queue()
-    number_of_threads = 3
 
     #Set up threads
-    for thread in range(number_of_threads):
+    for thread in range(num_thread):
         worker = ThreadZimfiles(file_queue, zim_root, zim_archive_path)
         worker.setDaemon(True)
         worker.start()
