@@ -35,7 +35,10 @@ def strip_noarchive(text):
     
 def process_text(original_text, zim_archive_path):
     """
-    Core function, process the whole text
+    Core function, process the whole text:
+    * Look for the URLs in the text
+    * Download the content
+    * Add internal links in the text
     """
     link = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#~]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
     #get a copy without noarchive stuffs
@@ -54,9 +57,7 @@ def process_text(original_text, zim_archive_path):
                 #new version:
                 extension = archive.make_archive_thread(zim_archive_path, file_uuid, url)
             except archive.URLError:
-                logging.error('URLError: ' + str(url))
-                #TODO
-                pass
+                logging.error('URLError: ' + str(url) + ' Not archived.')
             else:
                 #We successfully get the page
                 #We change the line
