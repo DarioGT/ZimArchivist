@@ -53,6 +53,10 @@ def link_archive_status(url, line):
         return True
 
 def extract_labels_filepath(line):
+    """
+    Given a line, return a list of filepaths
+    from each (Archive) link in the line
+    """
     filepaths = []
     #First, we detect labels
     re_archive = re.compile('\s\[\[(.+)\|\(Archive\)\]\]')
