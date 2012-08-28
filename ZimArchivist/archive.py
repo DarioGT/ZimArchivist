@@ -22,17 +22,15 @@ import glob
 import re
 import shutil
 
-#HTTP
-import urllib.request
-import socket #for exceptions
-import http.client
 
-#TODO remove unecessary libs
-from bs4 import BeautifulSoup as bs
+#HTTP
 import urllib.parse as urlparse
 from urllib.request import urlopen, urlretrieve
-
+#import urllib.request
+import socket #for exceptions
+import http.client
 import mimetypes
+from bs4 import BeautifulSoup as bs
 
 from ZimArchivist import editline
 
@@ -262,7 +260,7 @@ def make_archive_thread(file_dir, uuid, url):
     if mimetype == None:
         #Try to gess with urrllib if mimetype failed
         try:
-            fp = urllib.request.urlopen(url)
+            fp = urlopen(url)
         except urllib.error.HTTPError:
             print('could not open ' + str(url))
             # raise an error to do not add internal link in zim notes
