@@ -102,6 +102,9 @@ class ThreadImg(threading.Thread):
                 #Some links can raise ValueError
                 print('ValueError Fetchlink ' + str(e))
                 print(current_parsed)
+            except IOError as e:
+                print('ValueError Fetchlink ' + str(e))
+                print(current_parsed)
             img["src"] = os.path.relpath(outpath, self.htmlpath) # rel path
             #end...
             self.queue.task_done()
@@ -258,7 +261,12 @@ def make_archive_thread(file_dir, uuid, url):
   
     if mimetype == None:
         #Try to gess with urrllib if mimetype failed
-        fp = urllib.request.urlopen(url)
+        try:
+            fp = urllib.request.urlopen(url)
+        except urllib.error.HTTPError:
+            print('could not open ' + str(url))
+            # raise an error to do not add internal link in zim notes
+            raise URLError
         a = fp.info()
         mimetype = a.get_content_type()
         logging.debug('mimetype guess with urllib: ' + str(mimetype) )
@@ -319,7 +327,7 @@ def clean_archive(zim_files, zim_archive_path):
     #still in Notes
     file_archives = {}
     for filepath in get_archive_list(zim_archive_path): 
-        if filepath.endswith('.html'):
+        if os.path.isfile(filepath):
             file_archives[filepath] = False
   
     #We process all zim files
