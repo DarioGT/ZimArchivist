@@ -72,12 +72,10 @@ class ThreadImg(threading.Thread):
         while True:
             img = self.queue.get()
 
-
             number = random.random() #Another choice ?
             original_filename = img["src"].split("/")[-1].split('?')[0]
             new_filename = str(self.uuid) + '-' + str(number) + str(os.path.splitext(original_filename)[1])
-
-            
+           
             print('thread: ' + '--> ' + original_filename + '--' + str(number))
             #Directory for pictures
             pic_dir = os.path.join(self.htmlpath, str(self.uuid))
@@ -239,23 +237,35 @@ def get_archive_list(archive_path):
 #    with open(html_file, 'w') as htmlfile: 
 #        htmlfile.write(soup.prettify())
 
-#TODO s/html/something/
-def make_archive_thread(html_path, uuid, url):
+
+def make_archive_thread(file_dir, uuid, url):
     """
-    Download the url in html_path
-    and everything is named uuid
+    Download the url in file_dir
+    and everything is tagged with uuid.
+    If url is text/html, pictures are saved in a subdir
+    Otherwise, the bin file is saved.
+    
+    file_dir : directory where the archive is written
+    uuid : Archive ID
+    url : URL to archive
+    
+    return : extension of the main file
     """
     logging.debug('get ' + url)
 
     mimetype, encoding = mimetypes.guess_type(url)
     logging.debug('mimetype: ' + str(mimetype) )
   
-    #TODO
-    #if mimetype == None:
-    #Try to gess with urrllib
+    if mimetype == None:
+        #Try to gess with urrllib if mimetype failed
+        fp = urllib.request.urlopen(url)
+        a = fp.info()
+        mimetype = a.get_content_type()
+        logging.debug('mimetype guess with urllib: ' + str(mimetype) )
 
 
     if mimetype == 'text/html' or mimetype == None:
+        logging.debug('Download as text/html')
         file_extension = '.html'
         #Open the url
         try:
@@ -273,7 +283,7 @@ def make_archive_thread(html_path, uuid, url):
 
         #Set up threads
         for thread in range(number_of_threads):
-            worker = ThreadImg(lock, uuid, img_queue, parsed, html_path)
+            worker = ThreadImg(lock, uuid, img_queue, parsed, file_dir)
             worker.setDaemon(True)
             worker.start()
 
@@ -285,13 +295,13 @@ def make_archive_thread(html_path, uuid, url):
         print('waiting')
         img_queue.join()
         print('done')
-        html_file = os.path.join(html_path, str(uuid) + file_extension)
+        html_file = os.path.join(file_dir, str(uuid) + file_extension)
         with open(html_file, 'w') as htmlfile: 
             htmlfile.write(soup.prettify())
     else:
-        print('AUTRE EXT')
+        logging.debug('Download as a bin file')
         file_extension  = mimetypes.guess_extension(mimetype)
-        outpath = os.path.join(html_path, str(uuid) + str(file_extension) )
+        outpath = os.path.join(file_dir, str(uuid) + str(file_extension) )
         try:
             urlretrieve(url, outpath) #too simple, just fetch it!
         except ValueError as e:
@@ -299,6 +309,7 @@ def make_archive_thread(html_path, uuid, url):
             #Some links can raise ValueError
             print('ValueError Fetchlink ' + str(e))
     return file_extension
+
 
 def clean_archive(zim_files, zim_archive_path):
     """ Remove archives with no entry """
