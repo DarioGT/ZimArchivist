@@ -67,7 +67,9 @@ if __name__ == '__main__':
         print('Impossible to create ~/.zimarchivist/, Exiting...')
         sys.exit(2)
 
-    utils.create_pidfile()
+    lock_file = "~/.zimarchivist/zimarchivist.lock"
+
+    utils.create_pidfile(lock_file)
 
     log_filename = os.path.expanduser('~/.zimarchivist/zimarchivist.log')
     logging.basicConfig(filename=log_filename, filemode='w', level=logging.DEBUG)
@@ -152,4 +154,4 @@ if __name__ == '__main__':
         archive.clean_archive(zim_files, zim_archive_path)
 
 
-    utils.release_pidfile()
+    utils.release_pidfile(lock_file)
