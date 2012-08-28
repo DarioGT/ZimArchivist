@@ -46,9 +46,9 @@ def get_unexpanded_path(path):
 def create_pidfile():
     if os.access(os.path.expanduser("~/.zimarchivist/zimarchivist.lock"), os.F_OK):
             #Oh oh, there is a lock file
-            pidfile = open(os.path.expanduser("~/.zimarchivist/zimarchivist.lock"), "r")
-            pidfile.seek(0)
-            old_pd = pidfile.readline()
+            with open(os.path.expanduser("~/.zimarchivist/zimarchivist.lock"), "r") as pidfile:
+                pidfile.seek(0)
+                old_pd = pidfile.readline()
             #PID is running?
             if os.path.exists("/proc/%s" % old_pd):
                     #Yes
@@ -58,9 +58,8 @@ def create_pidfile():
                     #No
                     os.remove(os.path.expanduser("~/.zimarchivist/zimarchivist.lock"))
     
-    pidfile = open(os.path.expanduser("~/.zimarchivist/zimarchivist.lock"), "w")
-    pidfile.write("%s" % os.getpid())
-    pidfile.close
+    with open(os.path.expanduser("~/.zimarchivist/zimarchivist.lock"), "w") as pidfile:
+        pidfile.write("%s" % os.getpid())
 
 def release_pidfile():
     os.remove(os.path.expanduser("~/.zimarchivist/zimarchivist.lock"))

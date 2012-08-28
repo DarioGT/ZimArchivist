@@ -99,23 +99,18 @@ class ThreadZimfiles(threading.Thread):
             zim_file = self.zim_file_queue.get()
             print(zim_file)
             #read
-            #FIXME exception IO
-            thefile = open(zim_file, 'r')
-            original_text = thefile.read()
-            thefile.close()
+            with open(zim_file, 'r') as thefile
+                original_text = thefile.read()
             
             #process
             new_text = processtext.process_text(original_text, self.zim_archive_path)
             
             #write
-            #FIXME exception IO
-            thefile = open(zim_file, 'w')
-            thefile.write(new_text)
-            thefile.close()
+            with open(zim_file, 'w') as thefile:
+                thefile.write(new_text)
 
             #Update time
             relativepath = zim_file.split(self.zim_root + '/')[1]
-            self.lock.acquire()
             with self.lock:
                 timechecker.set_time(relativepath)
 
