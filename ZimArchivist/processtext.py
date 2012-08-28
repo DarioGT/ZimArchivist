@@ -48,11 +48,10 @@ def process_text(original_text, zim_archive_path):
         logging.debug('url: ' + str(url))
         if not editline.link_archive_status(url, copy_text):
             file_uuid = uuid.uuid4()
-            html_file_path = os.path.join(str(zim_archive_path), str(file_uuid) + ".html" )
             try:
                 #archive.make_archive(html_file_path, url)
                 #new version:
-                archive.make_archive_thread(zim_archive_path, file_uuid, url)
+                extension = archive.make_archive_thread(zim_archive_path, file_uuid, url)
             except archive.URLError:
                 logging.error('URLError: ' + str(url))
                 #TODO
@@ -61,7 +60,8 @@ def process_text(original_text, zim_archive_path):
                 #We successfully get the page
                 #We change the line
                 logging.debug('Add label')
-                original_text = editline.add_label(html_file_path, url, original_text)
+                file_path = os.path.join(str(zim_archive_path), str(file_uuid) + str(extension) )
+                original_text = editline.add_label(file_path, url, original_text)
         else:
             logging.debug('Already archived')
     return original_text

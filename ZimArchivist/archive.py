@@ -32,7 +32,7 @@ from bs4 import BeautifulSoup as bs
 import urllib.parse as urlparse
 from urllib.request import urlopen, urlretrieve
 
-
+import mimetypes
 
 from ZimArchivist import editline
 
@@ -119,56 +119,56 @@ def get_archive_list(archive_path):
         
         
 #def make_archive(html_path, url, line):
-def make_archive(html_path, url):
-    """ Make an archive 
-        from the url to the path
-    """
-    timeout = 15 #seconds
-    logging.debug('get ' + url)
-    try:
-        #Open the URL
-        opener = urllib.request.build_opener()
-        #Several websites do not accept python...
-        opener.addheaders = [('User-agent', 'Mozilla/5.0')]
-        #url = urllib.parse.quote(url, safe='/:?&')
-        data = opener.open(url, timeout=timeout)
-    except http.client.InvalidURL as e:
-        logging.warning('Invalid URL: ' + str(url))
-        raise URLError
-    except socket.timeout as socket_timeout:
-        logging.warning('socket.timeout: ' + str(url))
-        raise URLError
-    except urllib.error.URLError as e:
-        logging.warning('URLError: ' + str(url))
-        raise URLError
-    except urllib.error.HTTPError as http_err:
-        logging.warning('HTTPError: ' + str(url))
-        raise URLError
-    except:
-        logging.warning('URL oops!')
-        raise URLError
-    else:
-        try:
-            #Read data from the url
-            foo = data.read()
-        except socket.timeout as socket_timeout:
-            logging.warning('read() socket.timeout: ' + str(socket_timeout))
-            raise URLError
-        except socket.error as socket_err:
-            logging.warning('read() socket.timeout: ' + str(socket_err))
-            raise URLError
-        except:
-            logging.warning('read() oops!')
-            raise URLError
-        else:
-            logging.debug(html_path)
-            try:
-                filehandler = open(html_path, 'wb')
-                filehandler.write(foo)
-            except IOError:
-                logging.critical('could not write in ' + str(html_path) + ', leaving...') 
-                sys.exit(1)
-
+#def make_archive(html_path, url):
+#    """ Make an archive 
+#        from the url to the path
+#    """
+#    timeout = 15 #seconds
+#    logging.debug('get ' + url)
+#    try:
+#        #Open the URL
+#        opener = urllib.request.build_opener()
+#        #Several websites do not accept python...
+#        opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+#        #url = urllib.parse.quote(url, safe='/:?&')
+#        data = opener.open(url, timeout=timeout)
+#    except http.client.InvalidURL as e:
+#        logging.warning('Invalid URL: ' + str(url))
+#        raise URLError
+#    except socket.timeout as socket_timeout:
+#        logging.warning('socket.timeout: ' + str(url))
+#        raise URLError
+#    except urllib.error.URLError as e:
+#        logging.warning('URLError: ' + str(url))
+#        raise URLError
+#    except urllib.error.HTTPError as http_err:
+#        logging.warning('HTTPError: ' + str(url))
+#        raise URLError
+#    except:
+#        logging.warning('URL oops!')
+#        raise URLError
+#    else:
+#        try:
+#            #Read data from the url
+#            foo = data.read()
+#        except socket.timeout as socket_timeout:
+#            logging.warning('read() socket.timeout: ' + str(socket_timeout))
+#            raise URLError
+#        except socket.error as socket_err:
+#            logging.warning('read() socket.timeout: ' + str(socket_err))
+#            raise URLError
+#        except:
+#            logging.warning('read() oops!')
+#            raise URLError
+#        else:
+#            logging.debug(html_path)
+#            try:
+#                filehandler = open(html_path, 'wb')
+#                filehandler.write(foo)
+#            except IOError:
+#                logging.critical('could not write in ' + str(html_path) + ', leaving...') 
+#                sys.exit(1)
+#
                 
                 
 #def make_archive_thread_old(html_path, uuid, url):
@@ -239,46 +239,66 @@ def make_archive(html_path, url):
 #    with open(html_file, 'w') as htmlfile: 
 #        htmlfile.write(soup.prettify())
 
-
+#TODO s/html/something/
 def make_archive_thread(html_path, uuid, url):
     """
     Download the url in html_path
     and everything is named uuid
     """
     logging.debug('get ' + url)
-    #Open the url
-    try:
-        soup = bs(urlopen(url))
-    except urllib.error.HTTPError:
-        print('could not open ' + str(url))
-        # raise an error to do not add internal link in zim notes
-        raise URLError
-    #Parsed url
-    parsed = list(urlparse.urlparse(url))
 
-    img_queue = Queue()
-    number_of_threads = 4
-    lock = threading.Lock()
-
-    #Set up threads
-    for thread in range(number_of_threads):
-        worker = ThreadImg(lock, uuid, img_queue, parsed, html_path)
-        worker.setDaemon(True)
-        worker.start()
-
-    #Download images
-    for img in soup.findAll("img"):
-        img_queue.put(img)
-
-    #wait all the threads...
-    print('waiting')
-    img_queue.join()
-    print('done')
-    html_file = os.path.join(html_path, str(uuid) + '.html')
-    with open(html_file, 'w') as htmlfile: 
-        htmlfile.write(soup.prettify())
+    mimetype, encoding = mimetypes.guess_type(url)
+    logging.debug('mimetype: ' + str(mimetype) )
+  
+    #TODO
+    #if mimetype == None:
+    #Try to gess with urrllib
 
 
+    if mimetype == 'text/html' or mimetype == None:
+        file_extension = '.html'
+        #Open the url
+        try:
+            soup = bs(urlopen(url))
+        except urllib.error.HTTPError:
+            print('could not open ' + str(url))
+            # raise an error to do not add internal link in zim notes
+            raise URLError
+        #Parsed url
+        parsed = list(urlparse.urlparse(url))
+
+        img_queue = Queue()
+        number_of_threads = 4
+        lock = threading.Lock()
+
+        #Set up threads
+        for thread in range(number_of_threads):
+            worker = ThreadImg(lock, uuid, img_queue, parsed, html_path)
+            worker.setDaemon(True)
+            worker.start()
+
+        #Download images
+        for img in soup.findAll("img"):
+            img_queue.put(img)
+
+        #wait all the threads...
+        print('waiting')
+        img_queue.join()
+        print('done')
+        html_file = os.path.join(html_path, str(uuid) + file_extension)
+        with open(html_file, 'w') as htmlfile: 
+            htmlfile.write(soup.prettify())
+    else:
+        print('AUTRE EXT')
+        file_extension  = mimetypes.guess_extension(mimetype)
+        outpath = os.path.join(html_path, str(uuid) + str(file_extension) )
+        try:
+            urlretrieve(url, outpath) #too simple, just fetch it!
+        except ValueError as e:
+            #Normally OK, but...
+            #Some links can raise ValueError
+            print('ValueError Fetchlink ' + str(e))
+    return file_extension
 
 def clean_archive(zim_files, zim_archive_path):
     """ Remove archives with no entry """
