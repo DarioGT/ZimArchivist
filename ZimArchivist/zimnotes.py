@@ -40,6 +40,9 @@ def get_zim_files(zim_root):
     logging.info('Looking for zim files in ' + str(zim_root))
     zim_files = []
     for root, dirnames, filenames in os.walk(zim_root):
+        #Do not inspect .Archive
+        if '.Archive' in dirnames:
+            dirnames.remove(".Archive")
         logging.debug('look in ' + str(root))
         for filename in glob.glob(os.path.join(root, '*.txt')):
             logging.debug('file ' + filename)
@@ -99,7 +102,7 @@ class ThreadZimfiles(threading.Thread):
             zim_file = self.zim_file_queue.get()
             print(zim_file)
             #read
-            with open(zim_file, 'r') as thefile
+            with open(zim_file, 'r') as thefile:
                 original_text = thefile.read()
             
             #process
@@ -146,5 +149,4 @@ def process_zim_file(zim_root, zim_files, zim_archive_path, checktime=True, num_
     file_queue.join()
 
 if __name__ == '__main__':
-    #TODO doctest
     pass
