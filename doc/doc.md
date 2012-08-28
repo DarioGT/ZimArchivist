@@ -1,4 +1,4 @@
-# What ZimArchivist is?
+# What is ZimArchivist?
 
 Based on the fact that web changes everyday, the link you save in your zim notes could be obsolete (dead, the page moved...)
 This is a bit annoying. The solution is to keep on your hard drive a copy of the web page.
@@ -67,7 +67,7 @@ Logfiles, pid files and other internal files are stored in ~/.zimarchivist/
 
 # FAQ
 
-## Where I can found my archives? 
+## Where can I find my archives? 
 There are located in .Archive in your notebook path.
 
 ## Why the paths are ~/Notes and not /home/user/Notes?
@@ -75,7 +75,7 @@ This is because I'm syncing my notes on several computers with different usernam
 Thus, my paths work on every systems.
 
 ## Is it dangerous for my notes? 
-I don't think so. I'm using it every day and I didn't see any drawback.
+I don't think so. I'm using it every day and I have never seen any drawback.
 The thing you should know is that Zim does not reload the notebook when a file is modified.
 This means you can have a conflict if you continue to edit your notes after a cache process.
 Hopefully, this will be fixed soon. See https://bugs.launchpad.net/zim/+bug/792058 for more information.
