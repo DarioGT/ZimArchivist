@@ -79,7 +79,7 @@ class ThreadZimfiles(threading.Thread):
     """
     Process Zim files to create archives
     """
-    def __init__(self, zim_file_queue, zim_root, zim_archive_path):
+    def __init__(self, lock, zim_file_queue, zim_root, zim_archive_path):
         """
         Constructor
         """
@@ -87,6 +87,7 @@ class ThreadZimfiles(threading.Thread):
         self.zim_file_queue = zim_file_queue
         self.zim_root = zim_root
         self.zim_archive_path = zim_archive_path
+        self.lock = lock
     
     def run(self):
         """ Job: 
@@ -114,7 +115,9 @@ class ThreadZimfiles(threading.Thread):
 
             #Update time
             relativepath = zim_file.split(self.zim_root + '/')[1]
-            timechecker.set_time(relativepath)
+            self.lock.acquire()
+            with self.lock:
+                timechecker.set_time(relativepath)
 
             #Done
             self.zim_file_queue.task_done()
@@ -125,15 +128,16 @@ def process_zim_file(zim_root, zim_files, zim_archive_path, checktime=True, num_
     """
 
     file_queue = Queue()
-
+    lock = threading.Lock()
     #Set up threads
     for thread in range(num_thread):
-        worker = ThreadZimfiles(file_queue, zim_root, zim_archive_path)
+        worker = ThreadZimfiles(lock, file_queue, zim_root, zim_archive_path)
         worker.setDaemon(True)
         worker.start()
 
     for thisfile in zim_files:
         thisfile_relativepath = thisfile.split(zim_root + '/')[1]
+        #TODO need a lock here I guess...
         if timechecker.get_file_modif_status(zim_root, thisfile_relativepath) and checktime:
             #This zimfile has been updated, do it
             file_queue.put(thisfile)
