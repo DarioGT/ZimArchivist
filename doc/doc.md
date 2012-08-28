@@ -54,6 +54,9 @@ If you want to stop this behaviour, write
 
 or on a single line {noarchive} http://www.bar.org {/noarchive} like that.
 
+or a simpler way:
+!@ this line is not processed by ZimArchivist
+
 ## Things you may want to know 
 
 ZimArchivist first get the last modification date of each zimfile.

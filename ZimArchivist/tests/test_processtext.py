@@ -29,7 +29,19 @@ keep me again
         result = strip_noarchive(text) 
         self.assertEqual(result, valid)
 
+    def test_shorttag(self):
+        text = """
+Before
+!@ blah blah
+After
+"""
+        valid = """
+Before
 
+After
+"""
+        result = strip_noarchive(text)
+        self.assertEqual(result, valid)
 
 
 if __name__ == '__main__':

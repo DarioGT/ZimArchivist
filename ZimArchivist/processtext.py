@@ -29,6 +29,7 @@ def strip_noarchive(text):
     and the tags
     """
     text = re.sub('\{noarchive\}(\n|.)*?\{\/noarchive\}', '', text) #re.DOTALL buggy? FIXME
+    text = re.sub("!@.*", '', text)
     return text
 
     
