@@ -146,7 +146,8 @@ if __name__ == '__main__':
             zim_files = [zim_file_path]
 
         logging.info('Processing zim files')
-        zimnotes.process_zim_file(zim_root, zim_files, zim_archive_path, checktime)
+        from ZimArchivist import processtext
+        zimnotes.process_zim_file(zim_root, zim_files, zim_archive_path, processtext.process_text, checktime)
 
     if action_clean_archive:
         logging.info('Cache cleaning')

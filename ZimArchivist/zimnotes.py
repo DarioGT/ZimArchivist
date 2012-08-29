@@ -54,26 +54,6 @@ def get_zim_files(zim_root):
     logging.debug(zim_files)
     return zim_files
 
-#def process_zim_file_old(zim_file, zim_archive_path):
-#    """
-#    Read the zim file
-#    Look for links
-#    Archive links when necessary
-#    """
-#    #read
-#    thefile = open(zim_file, 'r')
-#    original_text = thefile.read()
-#    thefile.close()
-#    
-#    #process
-#    new_text = processtext.process_text(original_text, zim_archive_path)
-#    
-#    #write
-#    #TODO compare original and old file
-#    thefile = open(zim_file, 'w')
-#    thefile.write(new_text)
-#    thefile.close()
-
 
 import threading
 from queue import Queue
@@ -82,15 +62,23 @@ class ThreadZimfiles(threading.Thread):
     """
     Process Zim files to create archives
     """
-    def __init__(self, lock, zim_file_queue, zim_root, zim_archive_path):
+    #TODO generalize a step further, pass *args and zim_archive_path in it
+    def __init__(self, lock, zim_file_queue, zim_root, zim_archive_path, process_text_method):
         """
         Constructor
+
+        lock : lock from Threading
+        zim_file_queue : Queue contraing zim files
+        zim_root : filepath of the zim notebook root
+        zim_archive_path : .Archive
+        process_text_method : Function processing the text
         """
         threading.Thread.__init__(self)
+        self.lock = lock
         self.zim_file_queue = zim_file_queue
         self.zim_root = zim_root
         self.zim_archive_path = zim_archive_path
-        self.lock = lock
+        self.process_text_method = process_text_method
     
     def run(self):
         """ Job: 
@@ -106,7 +94,7 @@ class ThreadZimfiles(threading.Thread):
                 original_text = thefile.read()
             
             #process
-            new_text = processtext.process_text(original_text, self.zim_archive_path)
+            new_text = self.process_text_method(original_text, self.zim_archive_path)
             
             #write
             with open(zim_file, 'w') as thefile:
@@ -120,16 +108,23 @@ class ThreadZimfiles(threading.Thread):
             #Done
             self.zim_file_queue.task_done()
 
-def process_zim_file(zim_root, zim_files, zim_archive_path, checktime=True, num_thread=3):
+def process_zim_file(zim_root, zim_files, zim_archive_path, process_text_method, checktime=True, num_thread=3):
     """
     Archive links in zim_files
+
+    zim_root : filepath of the zim notebook root
+    zim_files : 
+    zim_archivist_path : 
+    process_text_method : Function processing the text
+    checktime :
+    num_threads : 
     """
 
     file_queue = Queue()
     lock = threading.Lock()
     #Set up threads
     for thread in range(num_thread):
-        worker = ThreadZimfiles(lock, file_queue, zim_root, zim_archive_path)
+        worker = ThreadZimfiles(lock, file_queue, zim_root, zim_archive_path, process_text_method)
         worker.setDaemon(True)
         worker.start()
 
@@ -150,3 +145,26 @@ def process_zim_file(zim_root, zim_files, zim_archive_path, checktime=True, num_
 
 if __name__ == '__main__':
     pass
+
+
+
+#def process_zim_file_old(zim_file, zim_archive_path):
+#    """
+#    Read the zim file
+#    Look for links
+#    Archive links when necessary
+#    """
+#    #read
+#    thefile = open(zim_file, 'r')
+#    original_text = thefile.read()
+#    thefile.close()
+#    
+#    #process
+#    new_text = processtext.process_text(original_text, zim_archive_path)
+#    
+#    #write
+#    #TODO compare original and old file
+#    thefile = open(zim_file, 'w')
+#    thefile.write(new_text)
+#    thefile.close()
+
