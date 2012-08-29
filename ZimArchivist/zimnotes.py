@@ -62,8 +62,7 @@ class ThreadZimfiles(threading.Thread):
     """
     Process Zim files to create archives
     """
-    #TODO generalize a step further, pass *args and zim_archive_path in it
-    def __init__(self, lock, zim_file_queue, zim_root, zim_archive_path, process_text_method):
+    def __init__(self, lock, zim_file_queue, zim_root, process_text_method, *args):
         """
         Constructor
 
@@ -72,13 +71,14 @@ class ThreadZimfiles(threading.Thread):
         zim_root : filepath of the zim notebook root
         zim_archive_path : .Archive
         process_text_method : Function processing the text
+        args : arguments for process_text_method
         """
         threading.Thread.__init__(self)
         self.lock = lock
         self.zim_file_queue = zim_file_queue
         self.zim_root = zim_root
-        self.zim_archive_path = zim_archive_path
         self.process_text_method = process_text_method
+        self.args = args
     
     def run(self):
         """ Job: 
@@ -94,7 +94,7 @@ class ThreadZimfiles(threading.Thread):
                 original_text = thefile.read()
             
             #process
-            new_text = self.process_text_method(original_text, self.zim_archive_path)
+            new_text = self.process_text_method(original_text, *self.args)
             
             #write
             with open(zim_file, 'w') as thefile:
@@ -108,23 +108,23 @@ class ThreadZimfiles(threading.Thread):
             #Done
             self.zim_file_queue.task_done()
 
-def process_zim_file(zim_root, zim_files, zim_archive_path, process_text_method, checktime=True, num_thread=3):
+def process_zim_file(zim_root, zim_files,  process_text_method, checktime, num_thread, *method_args):
     """
     Archive links in zim_files
 
     zim_root : filepath of the zim notebook root
     zim_files : 
-    zim_archivist_path : 
     process_text_method : Function processing the text
-    checktime :
-    num_threads : 
+    checktime : Check last modification time prior processing
+    num_threads : number of threads
+    method_args : arguments for process_text_method
     """
 
     file_queue = Queue()
     lock = threading.Lock()
     #Set up threads
     for thread in range(num_thread):
-        worker = ThreadZimfiles(lock, file_queue, zim_root, zim_archive_path, process_text_method)
+        worker = ThreadZimfiles(lock, file_queue, zim_root, process_text_method, *method_args)
         worker.setDaemon(True)
         worker.start()
 

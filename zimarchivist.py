@@ -28,6 +28,7 @@ from ZimArchivist import zimnotes
 from ZimArchivist import utils
 from ZimArchivist import timechecker
 from ZimArchivist import archive
+from ZimArchivist import processtext
 
 
 
@@ -146,8 +147,7 @@ if __name__ == '__main__':
             zim_files = [zim_file_path]
 
         logging.info('Processing zim files')
-        from ZimArchivist import processtext
-        zimnotes.process_zim_file(zim_root, zim_files, zim_archive_path, processtext.process_text, checktime)
+        zimnotes.process_zim_file(zim_root, zim_files,  processtext.process_text, checktime, 3 , zim_archive_path)
 
     if action_clean_archive:
         logging.info('Cache cleaning')
