@@ -2,8 +2,8 @@
 TODO list
 ---------
 
+* review zimnotes.process_zim_file, zim_root might be unused now
 
 * Revisit entirely the logging system
 * Have a look to the Lib WeasyPrint. It generates pdf from html.
 * The content ID (from mime) could be used as an ID for files instead of generated numbers
-* retroporter timechecker.py de ZimBIbliographer

@@ -30,8 +30,8 @@ import glob
 from ZimArchivist import utils
 #from ZimArchivist import archive
 #from ZimArchivist import editline
-from ZimArchivist import processtext
-from ZimArchivist import timechecker
+#from ZimArchivist import processtext
+#from ZimArchivist import timechecker
 
 def get_zim_files(zim_root):
     """
@@ -62,11 +62,13 @@ class ThreadZimfiles(threading.Thread):
     """
     Process Zim files to create archives
     """
-    def __init__(self, lock, zim_file_queue, zim_root, process_text_method, *args):
+    #def __init__(self, lock, zim_file_queue, zim_root, process_text_method, *args):
+    def __init__(self, lock, timechecker, zim_file_queue, zim_root, process_text_method, *args):
         """
         Constructor
 
         lock : lock from Threading
+        timechecker : Instance of TimeChecker
         zim_file_queue : Queue contraing zim files
         zim_root : filepath of the zim notebook root
         zim_archive_path : .Archive
@@ -75,6 +77,7 @@ class ThreadZimfiles(threading.Thread):
         """
         threading.Thread.__init__(self)
         self.lock = lock
+        self.timechecker = timechecker
         self.zim_file_queue = zim_file_queue
         self.zim_root = zim_root
         self.process_text_method = process_text_method
@@ -103,15 +106,18 @@ class ThreadZimfiles(threading.Thread):
             #Update time
             relativepath = zim_file.split(self.zim_root + '/')[1]
             with self.lock:
-                timechecker.set_time(relativepath)
+                self.timechecker.set_time(relativepath)
+                #timechecker.set_time(relativepath)
 
             #Done
             self.zim_file_queue.task_done()
 
-def process_zim_file(zim_root, zim_files,  process_text_method, checktime, num_thread, *method_args):
+#def process_zim_file(zim_root, zim_files,  process_text_method, checktime, num_thread, *method_args):
+def process_zim_file(timechecker, zim_root, zim_files, process_text_method, checktime, num_thread, *method_args):
     """
     Archive links in zim_files
 
+    timechecker : Instance of TimeChecker()
     zim_root : filepath of the zim notebook root
     zim_files : 
     process_text_method : Function processing the text
@@ -124,14 +130,16 @@ def process_zim_file(zim_root, zim_files,  process_text_method, checktime, num_t
     lock = threading.Lock()
     #Set up threads
     for thread in range(num_thread):
-        worker = ThreadZimfiles(lock, file_queue, zim_root, process_text_method, *method_args)
+        #worker = ThreadZimfiles(lock, file_queue, zim_root, process_text_method, *method_args)
+        worker = ThreadZimfiles(lock, timechecker, file_queue, zim_root, process_text_method, *method_args)
         worker.setDaemon(True)
         worker.start()
 
     for thisfile in zim_files:
         thisfile_relativepath = thisfile.split(zim_root + '/')[1]
         #TODO need a lock here I guess...
-        if timechecker.get_file_modif_status(zim_root, thisfile_relativepath) and checktime:
+        #if timechecker.get_file_modif_status(zim_root, thisfile_relativepath) and checktime:
+        if timechecker.get_file_modif_status(thisfile_relativepath) and checktime:
             #This zimfile has been updated, do it
             file_queue.put(thisfile)
         elif not checktime: 
