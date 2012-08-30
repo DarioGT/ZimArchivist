@@ -137,9 +137,9 @@ def process_zim_file(timechecker, zim_root, zim_files, process_text_method, chec
 
     for thisfile in zim_files:
         thisfile_relativepath = thisfile.split(zim_root + '/')[1]
-        #TODO need a lock here I guess...
-        #if timechecker.get_file_modif_status(zim_root, thisfile_relativepath) and checktime:
-        if timechecker.get_file_modif_status(thisfile_relativepath) and checktime:
+        with lock:
+            filestatus = timechecker.get_file_modif_status(thisfile_relativepath)
+        if filestatus and checktime:
             #This zimfile has been updated, do it
             file_queue.put(thisfile)
         elif not checktime: 
