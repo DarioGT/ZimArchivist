@@ -26,6 +26,7 @@ import shutil
 #HTTP
 import urllib.parse as urlparse
 from urllib.request import urlopen, urlretrieve
+import urllib.error
 #import urllib.request
 import socket #for exceptions
 import http.client
