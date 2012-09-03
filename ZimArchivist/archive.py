@@ -250,18 +250,22 @@ def make_archive_thread(file_dir, uuid, url):
     file_dir : directory where the archive is written
     uuid : Archive ID
     url : URL to archive
-    
+   
+    raise URLError if url is invalid or not accessible
+
     return : extension of the main file
     """
     logging.debug('get ' + url)
 
     mimetype, encoding = mimetypes.guess_type(url)
     logging.debug('mimetype: ' + str(mimetype) )
-  
+ 
+    timeout = 15
+
     if mimetype == None:
         #Try to gess with urrllib if mimetype failed
         try:
-            fp = urlopen(url)
+            fp = urlopen(url, timeout=timeout)
         except urllib.error.HTTPError:
             print('could not open ' + str(url))
             # raise an error to do not add internal link in zim notes
@@ -269,6 +273,9 @@ def make_archive_thread(file_dir, uuid, url):
         except urllib.error.URLError:
             print('could not open ' + str(url))
             # raise an error to do not add internal link in zim notes
+            raise URLError
+        except socket.timeout:
+            print('Time Out')
             raise URLError
 
         a = fp.info()
@@ -281,7 +288,7 @@ def make_archive_thread(file_dir, uuid, url):
         file_extension = '.html'
         #Open the url
         try:
-            soup = bs(urlopen(url))
+            soup = bs(urlopen(url, timeout=timeout))
         except urllib.error.HTTPError:
             print('could not open ' + str(url))
             # raise an error to do not add internal link in zim notes
@@ -289,6 +296,9 @@ def make_archive_thread(file_dir, uuid, url):
         except urllib.error.URLError:
             print('could not open ' + str(url))
             # raise an error to do not add internal link in zim notes
+            raise URLError
+        except socket.timeout:
+            print('Time Out')
             raise URLError
         #Parsed url
         parsed = list(urlparse.urlparse(url))

@@ -9,4 +9,5 @@ TODO list
 * The content ID (from mime) could be used as an ID for files instead of generated numbers
 
 
-* Timout : ex http://fuse.pha.jhu.edu/~wolven/posters.html
+* Timout : Done in a quick and dirty fashion
+
