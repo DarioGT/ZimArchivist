@@ -100,10 +100,10 @@ class ThreadImg(threading.Thread):
                 #Normally OK, but...
                 #Some links can raise ValueError
                 print('ValueError Fetchlink ' + str(e))
-                print(current_parsed)
+                #print(current_parsed)
             except IOError as e:
                 print('ValueError Fetchlink ' + str(e))
-                print(current_parsed)
+                #print(current_parsed)
             img["src"] = os.path.relpath(outpath, self.htmlpath) # rel path
             #end...
             self.queue.task_done()
@@ -324,6 +324,8 @@ def make_archive_thread(file_dir, uuid, url):
             #Normally OK, but...
             #Some links can raise ValueError
             print('ValueError Fetchlink ' + str(e))
+        except:
+            print('Exception ')
     return file_extension
 
 
