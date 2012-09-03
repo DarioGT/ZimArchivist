@@ -100,9 +100,8 @@ class ThreadImg(threading.Thread):
                 #Normally OK, but...
                 #Some links can raise ValueError
                 print('ValueError Fetchlink ' + str(e))
-                #print(current_parsed)
             except IOError as e:
-                print('ValueError Fetchlink ' + str(e))
+                print('IOError Fetchlink ' + str(e))
                 #print(current_parsed)
             img["src"] = os.path.relpath(outpath, self.htmlpath) # rel path
             #end...
@@ -263,7 +262,7 @@ def make_archive_thread(file_dir, uuid, url):
     timeout = 15
 
     if mimetype == None:
-        #Try to gess with urrllib if mimetype failed
+        #Try to guess with urrllib if mimetype failed
         try:
             fp = urlopen(url, timeout=timeout)
         except urllib.error.HTTPError:
