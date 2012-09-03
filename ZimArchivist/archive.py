@@ -266,6 +266,11 @@ def make_archive_thread(file_dir, uuid, url):
             print('could not open ' + str(url))
             # raise an error to do not add internal link in zim notes
             raise URLError
+        except urllib.error.URLError:
+            print('could not open ' + str(url))
+            # raise an error to do not add internal link in zim notes
+            raise URLError
+
         a = fp.info()
         mimetype = a.get_content_type()
         logging.debug('mimetype guess with urllib: ' + str(mimetype) )
@@ -278,6 +283,10 @@ def make_archive_thread(file_dir, uuid, url):
         try:
             soup = bs(urlopen(url))
         except urllib.error.HTTPError:
+            print('could not open ' + str(url))
+            # raise an error to do not add internal link in zim notes
+            raise URLError
+        except urllib.error.URLError:
             print('could not open ' + str(url))
             # raise an error to do not add internal link in zim notes
             raise URLError
