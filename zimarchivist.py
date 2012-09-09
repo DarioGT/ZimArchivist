@@ -37,32 +37,6 @@ from ZimArchivist.timechecker import TimeChecker
 # Main
 #############
 
-def usage():
-    """ Print usage... """
-    usage = """
-    zimarchivist --cache -d ~/Notes
-
-    Actions:
-        --cache: make a cache
-        Arg: 
-            -d: Zim notes directory
-        Option:
-            -f: Zim file path (Otherwise, the notebook is processed)
-
-
-        --clean: clean the cache by removing unnecessary archives
-        Arg: 
-            -d: Zim notes directory
-
-     Other options:
-        --no-timecheck: Do not check if zim file has been modified
-                        since the last time.
-    """
-
-    print(usage)
-
-
-
 
 
 if __name__ == '__main__':
