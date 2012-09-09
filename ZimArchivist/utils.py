@@ -35,12 +35,14 @@ def get_unexpanded_path(path):
     if start by /home/foo,
     convert /home/foo by ~ in a path
 
-    >>> get_unexpanded_path('/home/gnu/dir') #FIXME test specific to my environment
+    >>> get_unexpanded_path('/home/gnu/dir') 
     '~/dir'
-    >>> get_unexpanded_path('/tmp')
-    '/tmp'
+    >>> get_unexpanded_path('/tmp/foo')
+    '/tmp/foo'
+    >>> get_unexpanded_path('/home/fr/foo/home/bar')
+    '~/foo/home/bar'
     """
-    path = re.sub(os.getenv('HOME'), '~', str(path))
+    path = re.sub('^/home/[a-zA-Z0-9]*/', '~/', str(path))
     return path
 
 def create_pidfile(filename):
