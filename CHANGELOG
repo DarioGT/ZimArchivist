@@ -3,7 +3,7 @@
 ##################
 * Improve {noarchive} tags behavior
 * Add a quick noarchive tag: !@
-* Minor usage improvements
+* Usage refactoring
 * Download images
 * Threads for downloading pictures
 * Threads for processing zimfiles
