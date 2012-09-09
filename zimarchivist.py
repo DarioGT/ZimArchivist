@@ -18,7 +18,7 @@
 #System...
 import sys
 import os
-import getopt
+import argparse
 
 import logging
 
@@ -62,7 +62,28 @@ def usage():
     print(usage)
 
 
+
+
+
 if __name__ == '__main__':
+
+
+    parser = argparse.ArgumentParser(description='Archive the links in your zim notes',
+                     epilog='')
+
+    parser.add_argument('--version', action='version', version='%(prog)s 2.0') #FIXME
+    parser.add_argument('--action', help='Action: cache (default) or clean', choices=['cache','clean'], default='cache')
+    parser.add_argument('zimroot', help='Zim Notes directory', metavar='DIR')
+    parser.add_argument('-f', help='Zim Notes file', metavar='FILE')
+    parser.add_argument('--checktime', help='Checktime...') #FIXME no option
+
+    args = parser.parse_args()
+
+
+
+
+
+
     try:
         os.makedirs(os.path.expanduser('~/.zimarchivist'), exist_ok=True)
     except:
@@ -77,59 +98,60 @@ if __name__ == '__main__':
     logging.basicConfig(filename=log_filename, filemode='w', level=logging.DEBUG)
 
     
-    zim_root = None
-    zim_archive_path = None
-    zim_file_path = None
+    #zim_root = None
+    #zim_archive_path = None
+    #zim_file_path = None
     
-    try:
-        opts, args = getopt.getopt(sys.argv[1:],"hd:f:", ['help', 'clean', 'cache'])
-    except getopt.GetoptError:
-        logging.critical('Wrong option')
-        usage() 
-        sys.exit(2)
+    #try:
+    #    opts, args = getopt.getopt(sys.argv[1:],"hd:f:", ['help', 'clean', 'cache'])
+    #except getopt.GetoptError:
+    #    logging.critical('Wrong option')
+    #    usage() 
+    #    sys.exit(2)
 
         
-    action_make_archive = False
-    action_clean_archive = False
+    #action_make_archive = False
+    #action_clean_archive = False
     checktime = True
-        
-    for opt, arg in opts:   
-        if opt in ('-h', '--help'):
-            logging.debug("Option -h")
-            usage()
-            sys.exit(0)
-        elif opt in '--log':
-            pass
-            #TODO
-            #logging.basicConfig(filename=log_filename, filemode='w', level=logging.DEBUG)
-        elif opt in '--clean':
-            logging.debug("Option --clean")
-            action_clean_archive = True
-        elif opt in '--cache':
-            logging.debug("Option --cache")
-            action_make_archive = True
-        elif opt in '--no-timecheck':
-            logging.debug("Option --no-timecheck")
-            checktime = False
-        elif opt in '-d':
-            logging.debug("Option -d: " + str(arg))
-            zim_root = os.path.realpath(arg) 
-        elif opt in '-f':
-            logging.debug("Option -f: " + str(arg))
-            zim_file_path = os.path.realpath(arg) 
+    #    
+    #for opt, arg in opts:   
+    #    if opt in ('-h', '--help'):
+    #        logging.debug("Option -h")
+    #        usage()
+    #        sys.exit(0)
+    #    elif opt in '--log':
+    #        pass
+    #        #TODO
+    #        #logging.basicConfig(filename=log_filename, filemode='w', level=logging.DEBUG)
+    #    elif opt in '--clean':
+    #        logging.debug("Option --clean")
+    #        action_clean_archive = True
+    #    elif opt in '--cache':
+    #        logging.debug("Option --cache")
+    #        action_make_archive = True
+    #    elif opt in '--no-timecheck':
+    #        logging.debug("Option --no-timecheck")
+    #        checktime = False
+    #    elif opt in '-d':
+    #        logging.debug("Option -d: " + str(arg))
+    #        zim_root = os.path.realpath(arg) 
+    #    elif opt in '-f':
+    #        logging.debug("Option -f: " + str(arg))
+    #        zim_file_path = os.path.realpath(arg) 
 
-    if action_clean_archive or action_make_archive:
-        #Check if we know paths...         
-        if zim_root == None:
-            logging.critical('Missing Notebook filepath. Exiting')
-            usage()
-            sys.exit(2)
-        zim_archive_path = os.path.join(zim_root, '.Archive')
-    else:
-        usage()
-        sys.exit(2)
+    #if action_clean_archive or action_make_archive:
+    #    #Check if we know paths...         
+    #    if zim_root == None:
+    #        logging.critical('Missing Notebook filepath. Exiting')
+    #        usage()
+    #        sys.exit(2)
+    #    zim_archive_path = os.path.join(zim_root, '.Archive')
+    #else:
+    #    usage()
+    #    sys.exit(2)
 
-    if action_make_archive:
+    zim_archive_path = os.path.join(args.zimroot, '.Archive')
+    if args.action == 'cache':
         #Create the .Archive file
         if not (os.path.isdir(zim_archive_path)):
             try:
@@ -142,22 +164,22 @@ if __name__ == '__main__':
                 sys.exit(1)
         
         
-        if zim_file_path == None: 
-            zim_files = zimnotes.get_zim_files(zim_root)
+        if args.f == None: 
+            zim_files = zimnotes.get_zim_files(args.zimroot)
         else:
-            zim_files = [zim_file_path]
+            zim_files = [args.f]
 
         logging.info('Processing zim files')
 
-        timechecker = TimeChecker('~/.zimarchivist/time.db', zim_root)
+        timechecker = TimeChecker('~/.zimarchivist/time.db', args.zimroot)
         #remove zimroot
         #zimnotes.process_zim_file(timechecker, zim_root, zim_files, process_text, checktime, 1, '/tmp' )
-        zimnotes.process_zim_file(timechecker, zim_root, zim_files, processtext.process_text, checktime, 3 , zim_archive_path)
+        zimnotes.process_zim_file(timechecker, args.zimroot, zim_files, processtext.process_text, checktime, 3 , zim_archive_path)
 
 
-    if action_clean_archive:
+    if args.action == 'clean':
         logging.info('Cache cleaning')
-        zim_files = zimnotes.get_zim_files(zim_root)
+        zim_files = zimnotes.get_zim_files(args.zimroot)
         archive.clean_archive(zim_files, zim_archive_path)
 
 
