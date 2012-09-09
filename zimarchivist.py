@@ -31,7 +31,7 @@ from ZimArchivist import archive
 from ZimArchivist import processtext
 from ZimArchivist.timechecker import TimeChecker
 
-
+from ZimArchivist import info
 
 #############
 # Main
@@ -42,10 +42,10 @@ from ZimArchivist.timechecker import TimeChecker
 if __name__ == '__main__':
 
 
-    parser = argparse.ArgumentParser(description='Archive the links in your zim notes',
+    parser = argparse.ArgumentParser(description=info.SHORT_DESCRIPTION,
                      epilog='')
 
-    parser.add_argument('--version', action='version', version='%(prog)s 2.0') #FIXME
+    parser.add_argument('--version', action='version', version=info.NAME + ' ' + info.VERSION) 
     parser.add_argument('--action', help='Action: cache (default) or clean', choices=['cache','clean'], default='cache')
     parser.add_argument('zimroot', help='Zim Notes directory', metavar='DIR')
     parser.add_argument('-f', help='Zim Notes file', metavar='FILE')
