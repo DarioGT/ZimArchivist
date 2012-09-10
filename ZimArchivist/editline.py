@@ -16,7 +16,6 @@
 import re
 import logging
 from libzimsciunto import utils
-#from ZimArchivist import archive
 
 def add_label(html_path, url, line):
     """
