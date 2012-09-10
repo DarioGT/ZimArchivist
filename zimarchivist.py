@@ -24,12 +24,12 @@ import logging
 
 
 #our lib...
-from ZimArchivist import zimnotes
-from ZimArchivist import utils
-from ZimArchivist import timechecker
+from libzimsciunto import zimnotes
+from libzimsciunto import utils
+from libzimsciunto import timechecker
 from ZimArchivist import archive
 from ZimArchivist import processtext
-from ZimArchivist.timechecker import TimeChecker
+from libzimsciunto.timechecker import TimeChecker
 
 from ZimArchivist import info
 
