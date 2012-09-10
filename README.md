@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # Dependences
 * python3
+* BeautifulSoup 4
 * libZimSciunto: https://github.com/sciunto/libZimSciunto
 
 # ZimArchivist

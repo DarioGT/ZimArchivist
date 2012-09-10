@@ -10,6 +10,7 @@ GNU GPL v3 or later.
 
 # What are the dependencies?
 - python 3
+- libZimSciunto: https://github.com/sciunto/libZimSciunto
 - BeautifulSoup 4
 - ...
 
