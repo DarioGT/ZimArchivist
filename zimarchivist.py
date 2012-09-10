@@ -101,7 +101,9 @@ if __name__ == '__main__':
         logging.info('Processing zim files')
 
         timechecker = TimeChecker('~/.zimarchivist/time.db', args.zimroot)
-        zimnotes.process_zim_file(timechecker, args.zimroot, zim_files, processtext.process_text, args.notimecheck, 3 , zim_archive_path)
+        num_threads = 3
+        zimnotes.process_zim_file(timechecker, args.zimroot, zim_files, 
+            processtext.process_text, args.notimecheck, num_threads , zim_archive_path)
 
 
     if args.action == 'clean':
