@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # Dependences
-python3
+* python3
+* libZimSciunto: https://github.com/sciunto/libZimSciunto
 
 # ZimArchivist
 ZimArchivist is designed for your Zim wiki: zim-wiki.org
