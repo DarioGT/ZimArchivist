@@ -2,7 +2,9 @@
 TODO list
 ---------
 
+* Improve CLI
 * Update doc (command line interface)
+* generate doc
 
 
 * review zimnotes.process_zim_file, zim_root might be unused now
