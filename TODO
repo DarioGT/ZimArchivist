@@ -2,6 +2,9 @@
 TODO list
 ---------
 
+* Update doc (command line interface)
+
+
 * review zimnotes.process_zim_file, zim_root might be unused now
 
 * Revisit entirely the logging system
