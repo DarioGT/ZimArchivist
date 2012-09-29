@@ -1,5 +1,0 @@
-Known bugs
-----------
-
-If (at least) one file contains several times the same link, each link receive several archive tags.
-This is due to the parallel threading I guess

@@ -1,7 +1,0 @@
-How to release
-==============
-
-* Build doc, push it
-* Update the file info.py
-* Update CHANGELOG
-* Create a tarball
