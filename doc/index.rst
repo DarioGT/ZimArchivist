@@ -5,6 +5,8 @@
 
 Welcome to ZimArchivist's documentation!
 ========================================
+ZimArchivist is designed for your Zim wiki: zim-wiki.org
+It makes copies of your links in your notes on your disk.
 
 Contents:
 
@@ -30,7 +32,6 @@ What are the dependencies?
 - python 3
 - libZimSciunto: https://github.com/sciunto/libZimSciunto
 - BeautifulSoup 4
-- ...
 
 How to run ZimArchivist?
 ========================
