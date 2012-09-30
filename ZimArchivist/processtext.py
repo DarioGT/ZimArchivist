@@ -39,6 +39,11 @@ def process_text(original_text, zim_archive_path):
     * Look for the URLs in the text
     * Download the content
     * Add internal links in the text
+
+    The function returns a status (bool) indicating if true
+    that something goes wrong; and the remplacing text.
+
+    :returns: Tuple (boolean, string)
     """
     link = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#~]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
     #get a copy without noarchive stuffs
@@ -66,7 +71,7 @@ def process_text(original_text, zim_archive_path):
                 original_text = editline.add_label(file_path, url, original_text)
         else:
             logging.debug('Already archived')
-    return original_text
+    return (False, original_text)
 
     
     
