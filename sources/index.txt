@@ -50,26 +50,35 @@ This is **not** recommended yet, see the FAQ.
 
 OK, and the command is?
 =======================
+The command
+zimarchivist.py -h 
+gives you all details.
 
 Make a cache of a specific file URLs 
 -------------------------------------
-zimarchivist --cache -d ~/Notes -f ~/Notes/Home.txt
+zimarchivist.py -f ~/Notes/Home.txt ~/Notes
 
 Make a cache of the notebook URLs
 ---------------------------------
-zimarchivist --cache -d ~/Notes 
+zimarchivist ~/Notes 
 
 
 Clean archive cache
 -------------------
 If you remove in your note a line with a link and its archive label, the archive itself is not removed.
 To clean up your archive, run
-zimarchivist --clean -d ~/Notes 
+zimarchivist --action=clean ~/Notes 
 
 
 Features 
 ========
 Some intersting features.
+
+Mime Type
+--------
+ZimArchivist will try to guess the format behind a link.
+For instance, if your url links to a pdf or a jpeg file, it is saved as it.
+Otherwise, ZimArchivist will consider that the page is in html. In that case, it will download images included in the page.
 
 Do not archive this page/part 
 -----------------------------
@@ -101,6 +110,7 @@ FAQ
 Where can I find my archives? 
 -----------------------------
 There are located in .Archive in your notebook path.
+Each archive is named by an ID.
 
 Why the paths are ~/Notes and not /home/user/Notes?
 -----------------------------------------------------

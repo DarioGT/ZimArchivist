@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to ZimArchivist’s documentation! &mdash; ZimArchivist devel documentation</title>
+    <title>Welcome to ZimArchivist’s documentation! &mdash; ZimArchivist  documentation</title>
     
     <link rel="stylesheet" href="static/default.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     'devel',
+        VERSION:     '',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="ZimArchivist devel documentation" href="#" /> 
+    <link rel="top" title="ZimArchivist  documentation" href="#" /> 
   </head>
   <body>
     <div class="related">
@@ -35,7 +35,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="#">ZimArchivist devel documentation</a> &raquo;</li> 
+        <li><a href="#">ZimArchivist  documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -89,24 +89,33 @@ This is <strong>not</strong> recommended yet, see the FAQ.</p>
 </div>
 <div class="section" id="ok-and-the-command-is">
 <h1>OK, and the command is?<a class="headerlink" href="#ok-and-the-command-is" title="Permalink to this headline">¶</a></h1>
+<p>The command
+zimarchivist.py -h
+gives you all details.</p>
 <div class="section" id="make-a-cache-of-a-specific-file-urls">
 <h2>Make a cache of a specific file URLs<a class="headerlink" href="#make-a-cache-of-a-specific-file-urls" title="Permalink to this headline">¶</a></h2>
-<p>zimarchivist &#8211;cache -d ~/Notes -f ~/Notes/Home.txt</p>
+<p>zimarchivist.py -f ~/Notes/Home.txt ~/Notes</p>
 </div>
 <div class="section" id="make-a-cache-of-the-notebook-urls">
 <h2>Make a cache of the notebook URLs<a class="headerlink" href="#make-a-cache-of-the-notebook-urls" title="Permalink to this headline">¶</a></h2>
-<p>zimarchivist &#8211;cache -d ~/Notes</p>
+<p>zimarchivist ~/Notes</p>
 </div>
 <div class="section" id="clean-archive-cache">
 <h2>Clean archive cache<a class="headerlink" href="#clean-archive-cache" title="Permalink to this headline">¶</a></h2>
 <p>If you remove in your note a line with a link and its archive label, the archive itself is not removed.
 To clean up your archive, run
-zimarchivist &#8211;clean -d ~/Notes</p>
+zimarchivist &#8211;action=clean ~/Notes</p>
 </div>
 </div>
 <div class="section" id="features">
 <h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
 <p>Some intersting features.</p>
+<div class="section" id="mime-type">
+<h2>Mime Type<a class="headerlink" href="#mime-type" title="Permalink to this headline">¶</a></h2>
+<p>ZimArchivist will try to guess the format behind a link.
+For instance, if your url links to a pdf or a jpeg file, it is saved as it.
+Otherwise, ZimArchivist will consider that the page is in html. In that case, it will download images included in the page.</p>
+</div>
 <div class="section" id="do-not-archive-this-page-part">
 <h2>Do not archive this page/part<a class="headerlink" href="#do-not-archive-this-page-part" title="Permalink to this headline">¶</a></h2>
 <p>From time to time, you could desire to avoid archiving.
@@ -132,7 +141,8 @@ This behavior could be override by adding the option &#8211;no-timecheck</p>
 <h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="where-can-i-find-my-archives">
 <h2>Where can I find my archives?<a class="headerlink" href="#where-can-i-find-my-archives" title="Permalink to this headline">¶</a></h2>
-<p>There are located in .Archive in your notebook path.</p>
+<p>There are located in .Archive in your notebook path.
+Each archive is named by an ID.</p>
 </div>
 <div class="section" id="why-the-paths-are-notes-and-not-home-user-notes">
 <h2>Why the paths are ~/Notes and not /home/user/Notes?<a class="headerlink" href="#why-the-paths-are-notes-and-not-home-user-notes" title="Permalink to this headline">¶</a></h2>
@@ -184,6 +194,7 @@ You can do the same.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#features">Features</a><ul>
+<li><a class="reference internal" href="#mime-type">Mime Type</a></li>
 <li><a class="reference internal" href="#do-not-archive-this-page-part">Do not archive this page/part</a></li>
 <li><a class="reference internal" href="#things-you-may-want-to-know">Things you may want to know</a></li>
 </ul>
@@ -225,7 +236,7 @@ You can do the same.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="#">ZimArchivist devel documentation</a> &raquo;</li> 
+        <li><a href="#">ZimArchivist  documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
