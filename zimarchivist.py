@@ -49,7 +49,7 @@ if __name__ == '__main__':
     parser.add_argument('--action', help='Action: cache (default) or clean', choices=['cache','clean'], default='cache')
     parser.add_argument('zimroot', help='Zim Notes directory', metavar='DIR')
     parser.add_argument('-f', help='Zim Notes file', metavar='FILE')
-    parser.add_argument('--notimecheck', help='No timecheck', action='store_true') 
+    parser.add_argument('--notimecheck', help='No timecheck', action='store_false') 
     #TODO LOG
     #parser.add_argument('--log', help='log') #FIXME no option
     #        #logging.basicConfig(filename=log_filename, filemode='w', level=logging.DEBUG)
