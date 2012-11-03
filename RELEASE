@@ -6,3 +6,4 @@ How to release
 * Update the file info.py
 * Build doc, push it
 * Create a tarball
+    git archive master | bzip2 > ZimArchivist-x.y.tar.bz2
