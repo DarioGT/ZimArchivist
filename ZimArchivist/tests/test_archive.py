@@ -55,6 +55,9 @@ class TestGetUnlinkedArchive(unittest.TestCase):
         zim_archives = ['archive1.html', 'archive2.html']
         valid =  ['archive1', 'archive2']
         result = get_unlinked_archive(zim_files, zim_archives) 
+        #result is sorted because the method does
+        #not take care of the order
+        result.sort()
         self.assertEqual(result, valid)
 
     def test_mix(self):
