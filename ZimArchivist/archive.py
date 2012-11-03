@@ -112,7 +112,10 @@ class ThreadImg(threading.Thread):
 
 def get_archive_list(archive_path):
     """ Return the list of archive files"""
-    return glob.glob(os.path.join(archive_path, '*'))
+    archives = []
+    for element in glob.glob(os.path.join(archive_path, '*')):
+        archives.append(os.path.basename(element))
+    return archives
         
 
 def make_archive_thread(file_dir, uuid, url):
@@ -214,40 +217,54 @@ def make_archive_thread(file_dir, uuid, url):
     return file_extension
 
 
-def clean_archive(zim_files, zim_archive_path):
-    """ Remove archives with no entry """
+
+def get_unlinked_archive(zim_files, zim_archives):
+    """
+    return the list of archives which are not linked
+    in zim_files
+    """
 
     #First, we bluid a dictionary
     #to list html archives which are
     #still in Notes
     file_archives = {}
-    for filepath in get_archive_list(zim_archive_path): 
-        if os.path.isfile(filepath):
-            file_archives[filepath] = False
+    for name in zim_archives: 
+        file_archives[name] = False
   
     #We process all zim files
     #To get existing links
-    re_archive = re.compile('\s\[\[.*\|\(Archive\)\]\]')
     for filename in zim_files:
         for line in open(filename, 'r'):
             for path in editline.extract_labels_filepath(line):
-                print(path)
                 #FIXME the key may not exist, should be handled
-                path = os.path.expanduser(path)
+                name = os.path.basename(path)
                 #it exists -> True
-                file_archives[path] = True
+                file_archives[name] = True
+                print("EXIST: %s" % name)
 
+    archives = []
     #We delete all path related to False value
     for htmlfile in file_archives.keys():
         if file_archives[htmlfile] == False:
-            print('key')
-            print(htmlfile)
+            archives.append(os.path.splitext(htmlfile)[0])
+            print("RQ: %s" % htmlfile)
+    return archives
+                
+def clean_archive(zim_files, zim_archive_path):
+    """ Remove archives with no entry """
+
+    zim_archives = get_archive_list(zim_archive_path)
+    archives = get_unlinked_archive(zim_files, zim_archives)
+
+    for archive in archives:
+        archive = os.path.join(zim_archive_path, archive)
+        htmlfile = archive + '.html'
+        if os.path.exists(htmlfile):
             logging.info('remove ' + str(htmlfile))
             os.remove(htmlfile)
-            directory = htmlfile.rstrip('.html')
-            if os.path.exists(directory):
-                shutil.rmtree(directory) 
-                
-                
+        if os.path.exists(archive):
+            logging.info('remove ' + str(archive))
+            shutil.rmtree(archive) 
+
 if __name__ == '__main__':
     pass
