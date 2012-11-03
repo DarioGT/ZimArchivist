@@ -7,13 +7,21 @@ import os.path
 from archive import get_archive_list
 class TestGetArchiveList(unittest.TestCase):
 
-    def test(self):
+    def test_one_file(self):
         path = tempfile.TemporaryDirectory()
         tmpfile = tempfile.NamedTemporaryFile(dir=path.name, delete=False)
         result = get_archive_list(path.name)
         valid = [os.path.basename(tmpfile.name)]
         self.assertEqual(result, valid)
 
+    def test_one_dir_one_file(self):
+        """ Only files must be returned"""
+        path = tempfile.TemporaryDirectory()
+        tmpfile = tempfile.NamedTemporaryFile(dir=path.name, delete=False)
+        tmpdir = tempfile.TemporaryDirectory(dir=path.name)
+        result = get_archive_list(path.name)
+        valid = [os.path.basename(tmpfile.name)]
+        self.assertEqual(result, valid)
 
 from archive import get_unlinked_archive
 

@@ -114,7 +114,8 @@ def get_archive_list(archive_path):
     """ Return the list of archive files"""
     archives = []
     for element in glob.glob(os.path.join(archive_path, '*')):
-        archives.append(os.path.basename(element))
+        if os.path.isfile(element):
+            archives.append(os.path.basename(element))
     return archives
         
 
@@ -230,6 +231,7 @@ def get_unlinked_archive(zim_files, zim_archives):
     file_archives = {}
     for name in zim_archives: 
         file_archives[name] = False
+        print("START: %s" % name)
   
     #We process all zim files
     #To get existing links
