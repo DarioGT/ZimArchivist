@@ -14,6 +14,9 @@ others
 * generate doc
 
 
+* check archive: 
+  Check if links in zim notes have an existing archive
+
 * review zimnotes.process_zim_file, zim_root might be unused now
 
 * The content ID (from mime) could be used as an ID for files instead of generated numbers
