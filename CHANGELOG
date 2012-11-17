@@ -1,4 +1,9 @@
 ##################
+# v
+##################
+* Reprocess the page if the previous check failled
+
+##################
 # v0.2.6 2012-11-3
 ##################
 * bugfix option timecheck
