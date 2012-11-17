@@ -71,7 +71,11 @@ class ThreadImg(threading.Thread):
             img = self.queue.get()
 
             number = random.random() #Another choice ?
-            original_filename = img["src"].split("/")[-1].split('?')[0]
+            try:
+                original_filename = img["src"].split("/")[-1].split('?')[0]
+            except KeyError:
+                print('KeyError img["src"]. Ignoring...')
+                continue
             new_filename = str(self.uuid) + '-' + str(number) + str(os.path.splitext(original_filename)[1])
            
             print('thread: ' + '--> ' + original_filename + '--' + str(number))
