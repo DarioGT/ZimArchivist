@@ -52,6 +52,8 @@ def process_text(original_text, zim_archive_path):
     #get all URLs
     urls = link.findall(copy_text)
 
+    errors = False
+
     for url in urls:
         #Is it already archived?
         logging.debug('url: ' + str(url))
@@ -63,6 +65,7 @@ def process_text(original_text, zim_archive_path):
                 extension = archive.make_archive_thread(zim_archive_path, file_uuid, url)
             except archive.URLError:
                 logging.error('URLError: ' + str(url) + ' Not archived.')
+                errors = True
             else:
                 #We successfully get the page
                 #We change the line
@@ -71,7 +74,5 @@ def process_text(original_text, zim_archive_path):
                 original_text = editline.add_label(file_path, url, original_text)
         else:
             logging.debug('Already archived')
-    return (False, original_text)
+    return (errors, original_text)
 
-    
-    

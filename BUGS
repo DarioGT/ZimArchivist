@@ -5,9 +5,6 @@ If (at least) one file contains several times the same link, each link receive s
 This is due to the parallel threading I guess
 
 
-if could not open, do not put the date in timedb
-
-
 if the line contains:
  (http://toto.org), it fails.
 
