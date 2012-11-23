@@ -51,23 +51,36 @@ This is **not** recommended yet, see the FAQ.
 OK, and the command is?
 =======================
 The command
-zimarchivist -h 
+
+.. code-block:: sh
+
+    zimarchivist -h 
+
 gives you all details.
 
 Make a cache of a specific file URLs 
 -------------------------------------
-zimarchivist -f ~/Notes/Home.txt ~/Notes
+
+.. code-block:: sh
+
+    zimarchivist -f ~/Notes/Home.txt ~/Notes
 
 Make a cache of the notebook URLs
 ---------------------------------
-zimarchivist ~/Notes 
+
+.. code-block:: sh
+
+    zimarchivist ~/Notes 
 
 
 Clean archive cache
 -------------------
 If you remove in your note a line with a link and its archive label, the archive itself is not removed.
 To clean up your archive, run
-zimarchivist --action=clean ~/Notes 
+
+.. code-block:: sh
+
+    zimarchivist --action=clean ~/Notes 
 
 
 Features 
