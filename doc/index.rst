@@ -51,12 +51,12 @@ This is **not** recommended yet, see the FAQ.
 OK, and the command is?
 =======================
 The command
-zimarchivist.py -h 
+zimarchivist -h 
 gives you all details.
 
 Make a cache of a specific file URLs 
 -------------------------------------
-zimarchivist.py -f ~/Notes/Home.txt ~/Notes
+zimarchivist -f ~/Notes/Home.txt ~/Notes
 
 Make a cache of the notebook URLs
 ---------------------------------
