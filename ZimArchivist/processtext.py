@@ -15,6 +15,8 @@
 
 import re
 import logging
+logger = logging.getLogger('zimarchivist.processtext')
+
 import uuid
 import os
 from ZimArchivist import archive
@@ -56,7 +58,7 @@ def process_text(original_text, zim_archive_path):
 
     for url in urls:
         #Is it already archived?
-        logging.debug('url: ' + str(url))
+        logger.debug('url: ' + str(url))
         if not editline.link_archive_status(url, copy_text):
             file_uuid = uuid.uuid4()
             try:
@@ -64,15 +66,15 @@ def process_text(original_text, zim_archive_path):
                 #new version:
                 extension = archive.make_archive_thread(zim_archive_path, file_uuid, url)
             except archive.URLError:
-                logging.error('URLError: ' + str(url) + ' Not archived.')
+                logger.error('URLError: ' + str(url) + ' Not archived.')
                 errors = True
             else:
                 #We successfully get the page
                 #We change the line
-                logging.debug('Add label')
+                logger.debug('Add label')
                 file_path = os.path.join(str(zim_archive_path), str(file_uuid) + str(extension) )
                 original_text = editline.add_label(file_path, url, original_text)
         else:
-            logging.debug('Already archived')
+            logger.debug('Already archived')
     return (errors, original_text)
 

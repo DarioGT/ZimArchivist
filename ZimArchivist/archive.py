@@ -15,12 +15,13 @@
 
 """ Functions dealing with the archive"""
 
-import logging
 import os
 import sys
 import glob
 import re
 import shutil
+import logging
+logger = logging.getLogger('zimarchivist.archive')
 
 
 #HTTP
@@ -138,10 +139,10 @@ def make_archive_thread(file_dir, uuid, url):
 
     return : extension of the main file
     """
-    logging.debug('get ' + url)
+    logger.debug('get ' + url)
 
     mimetype, encoding = mimetypes.guess_type(url)
-    logging.debug('mimetype: ' + str(mimetype) )
+    logger.debug('mimetype: ' + str(mimetype) )
  
     timeout = 15
 
@@ -163,11 +164,11 @@ def make_archive_thread(file_dir, uuid, url):
 
         a = fp.info()
         mimetype = a.get_content_type()
-        logging.debug('mimetype guess with urllib: ' + str(mimetype) )
+        logger.debug('mimetype guess with urllib: ' + str(mimetype) )
 
 
     if mimetype == 'text/html' or mimetype == None:
-        logging.debug('Download as text/html')
+        logger.debug('Download as text/html')
         file_extension = '.html'
         #Open the url
         try:
@@ -208,7 +209,7 @@ def make_archive_thread(file_dir, uuid, url):
         with open(html_file, 'w') as htmlfile: 
             htmlfile.write(soup.prettify())
     else:
-        logging.debug('Download as a bin file')
+        logger.debug('Download as a bin file')
         file_extension  = mimetypes.guess_extension(mimetype)
         outpath = os.path.join(file_dir, str(uuid) + str(file_extension) )
         try:
@@ -266,10 +267,10 @@ def clean_archive(zim_files, zim_archive_path):
         archive = os.path.join(zim_archive_path, archive)
         htmlfile = archive + '.html'
         if os.path.exists(htmlfile):
-            logging.info('remove ' + str(htmlfile))
+            logger.info('remove ' + str(htmlfile))
             os.remove(htmlfile)
         if os.path.exists(archive):
-            logging.info('remove ' + str(archive))
+            logger.info('remove ' + str(archive))
             shutil.rmtree(archive) 
 
 if __name__ == '__main__':

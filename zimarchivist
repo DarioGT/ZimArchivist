@@ -71,8 +71,26 @@ if __name__ == '__main__':
 
     utils.create_pidfile(lock_file)
 
+    ######
+    #LOGS
+    ######
+    logger = logging.getLogger('zimarchivist')
+    #logger.setLevel(logging.DEBUG)
+
+    #File
     log_filename = os.path.expanduser('~/.zimarchivist/zimarchivist.log')
-    logging.basicConfig(filename=log_filename, filemode='w', level=logging.DEBUG)
+    filehandler = logging.FileHandler(log_filename)
+    filehandler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    filehandler.setFormatter(formatter)
+    logger.addHandler(filehandler)
+
+    #Console
+    consolehandler = logging.StreamHandler()
+    consolehandler.setLevel(logging.ERROR)
+    formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+    consolehandler.setFormatter(formatter)
+    logger.addHandler(consolehandler)
 
     #TODO : need realpath ?
     #paths...
@@ -86,10 +104,10 @@ if __name__ == '__main__':
             try:
                 os.mkdir(zim_archive_path)
             except OSError:
-                logging.critical('could not make ', zim_archive_path)
+                logger.critical('could not make ', zim_archive_path)
                 sys.exit(1)
             except IOError:
-                logging.critical('could not make ', zim_archive_path)
+                logger.critical('could not make ', zim_archive_path)
                 sys.exit(1)
         
         
@@ -98,7 +116,7 @@ if __name__ == '__main__':
         else:
             zim_files = [args.f]
 
-        logging.info('Processing zim files')
+        logger.info('Processing zim files')
 
         timechecker = TimeChecker('~/.zimarchivist/time.db', args.zimroot)
         num_threads = 3
@@ -107,7 +125,7 @@ if __name__ == '__main__':
 
 
     if args.action == 'clean':
-        logging.info('Cache cleaning')
+        logger.info('Cache cleaning')
         zim_files = zimnotes.get_zim_files(args.zimroot)
         archive.clean_archive(zim_files, zim_archive_path)
 

@@ -15,6 +15,8 @@
 
 import re
 import logging
+logger = logging.getLogger('zimarchivist.editline')
+
 from libzimsciunto import utils
 
 def add_label(html_path, url, line):
@@ -43,7 +45,7 @@ def link_archive_status(url, line):
     False: Not archived 
     True: Archived
     """
-    logging.debug('line: ' + str(line))
+    logger.debug('line: ' + str(line))
     link_archived = re.compile(utils.protect(url) + '(\|.*\]\])?\s\[\[.*\|\(Archive\)\]\]')
     matching = link_archived.search(line)
     if matching == None:
