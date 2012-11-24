@@ -96,17 +96,25 @@ Otherwise, ZimArchivist will consider that the page is in html. In that case, it
 Do not archive this page/part 
 -----------------------------
 From time to time, you could desire to avoid archiving.
-Everything below the tag
-{noarchive}
-will be ignored.
-http://www.foo.org
-If you want to stop this behaviour, write
-{/noarchive}
 
-or on a single line {noarchive} http://www.bar.org {/noarchive} like that.
+.. code-block:: text
+
+    Everything below the tag
+    {noarchive}
+    will be ignored.
+    http://www.foo.org
+    If you want to stop this behaviour, write
+    {/noarchive}
+
+.. code-block:: text
+
+    or on a single line {noarchive} http://www.bar.org {/noarchive} like that.
 
 or a simpler way:
-!@ this line is not processed by ZimArchivist
+
+.. code-block:: text
+
+    !@ this line is not processed by ZimArchivist
 
 Things you may want to know 
 ---------------------------
