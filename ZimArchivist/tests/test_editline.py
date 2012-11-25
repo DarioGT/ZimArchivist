@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import unittest 
 
@@ -9,7 +10,9 @@ from editline import extract_labels_filepath
 
 class TestEditline(unittest.TestCase):
 
+    ##############################
     #Function link_archive_status
+    ##############################
     def test_link_archive_status_OK(self):
         url = 'http://www.to-to.org/article?=123'
         line = 'A nice line with http://www.to-to.org/article?=123 [[/a/great/path/file.html|(Archive)]]'
@@ -34,7 +37,15 @@ class TestEditline(unittest.TestCase):
         result = link_archive_status(url, line)
         self.assertFalse(result)
 
+    def test_link_in_parenthesis_archive_status_NO(self):
+        url = 'http://www.toto.org'
+        line = 'A nice line with (http://www.toto.org) Another info'
+        result = link_archive_status(url, line)
+        self.assertFalse(result)
+
+    ##############################
     #Function add_label
+    ##############################
     def test_simple_url(self):
         result = add_label('toto.html', 'http://www.google.fr', 'Link : http://www.google.fr a Comment')
         self.assertEqual(result, 'Link : http://www.google.fr [[toto.html|(Archive)]] a Comment')
@@ -62,7 +73,9 @@ class TestEditline(unittest.TestCase):
         result = add_label('toto.html', 'https://www.google.fr', 'Link : [[https://www.google.fr|link]] a Comment')
         self.assertEqual(result, 'Link : [[https://www.google.fr|link]] [[toto.html|(Archive)]] a Comment')
 
+    ##############################
     #Function extract_labels_filepath
+    ##############################
     def test_extraction_simple(self):
         line = 'This is a line http://www.foo.org [[~/Notes/.Archive/aa.html|(Archive)]]' 
         result = extract_labels_filepath(line)
