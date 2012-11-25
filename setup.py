@@ -11,6 +11,7 @@ setup(
     license      = info.LICENSE,
     author_email = info.EMAIL,
     description  = info.SHORT_DESCRIPTION,
-    packages = ['ZimArchivist'],
-    scripts     = ['zimarchivist'],
+    packages     = ['ZimArchivist'],
+    scripts      = ['zimarchivist'],
+    requires     = ['libZimSciunto (>=0.3)'],
 )
