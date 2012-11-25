@@ -3,7 +3,7 @@
 import unittest 
 
 from processtext import strip_noarchive
-from processtext import _get_unarchived_urls
+from processtext import _get_urls
 
 class TestEditline(unittest.TestCase):
 
@@ -71,7 +71,7 @@ After
         text = """
         (http://www.fsf.org)
         """
-        result = _get_unarchived_urls(text)
+        result = _get_urls(text)
         valid = ['http://www.fsf.org']
         self.assertEqual(result, valid)
 

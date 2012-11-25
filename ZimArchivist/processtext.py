@@ -26,9 +26,8 @@ from ZimArchivist import editline
 def strip_noarchive(text):
     """
     Remove the content inside
-    {noarchive}
-    {/noarchive}
-    and the tags
+    {noarchive} and {/noarchive}
+    and after !@
     """
     text = re.sub('\{noarchive\}(\n|.)*?\{\/noarchive\}', '', text) #re.DOTALL buggy? FIXME
     text = re.sub("!@.*", '', text)
@@ -36,9 +35,9 @@ def strip_noarchive(text):
 
 
 
-def _get_unarchived_urls(original_text):
+def _get_urls(original_text):
     """
-    Get the list of urls without archive
+    Get the list of urls without noarchive tags
 
     :returns: a list of urls
     """
