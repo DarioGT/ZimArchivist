@@ -74,8 +74,9 @@ if __name__ == '__main__':
     ######
     #LOGS
     ######
-    logger = logging.getLogger('zimarchivist')
-    #logger.setLevel(logging.DEBUG)
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    logger.name = 'zimarchivist'
 
     #File
     log_filename = os.path.expanduser('~/.zimarchivist/zimarchivist.log')
