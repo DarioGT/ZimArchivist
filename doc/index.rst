@@ -27,11 +27,27 @@ What is the license?
 ======================
 GNU GPL v3 or later.
 
-What are the dependencies?
-==========================
-- python 3
-- libZimSciunto: https://github.com/sciunto/libZimSciunto
-- BeautifulSoup 4
+
+How to install
+==============
+
+Requirements
+------------
+
+* python 3
+* `python-libZimSciunto <http://pypi.python.org/pypi/libZimSciunto/>`_
+* BeautifulSoup 4
+
+Install
+-------
+
+A package is available on `pypi <http://pypi.python.org/pypi/ZimArchivist/>`_.
+Otherwise, you can install it by running:
+
+.. code-block:: sh
+
+    python setup.py install --root='/'
+
 
 How to run ZimArchivist?
 ========================
