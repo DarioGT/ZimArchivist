@@ -3,10 +3,13 @@
 import unittest 
 
 from processtext import strip_noarchive
+from processtext import _get_unarchived_urls
 
 class TestEditline(unittest.TestCase):
 
+    #########################
     #Function strip_noarchive
+    #########################
     def test_oneline(self):
         text = "keep me {noarchive} erase me {/noarchive} keep me"
         valid = "keep me  keep me"
@@ -41,6 +44,35 @@ Before
 After
 """
         result = strip_noarchive(text)
+        self.assertEqual(result, valid)
+
+
+    #########################
+    # _get_unarchived_urls()
+    #########################
+    def test_simple_url(self):
+        text = """
+        http://www.fsf.org
+        """
+        result = _get_unarchived_urls(text)
+        valid = ['http://www.fsf.org']
+        self.assertEqual(result, valid)
+
+    def test_multiple_url(self):
+        text = """
+        http://www.fsf.org and http://www.april.org
+        """
+        result = _get_unarchived_urls(text)
+        valid = ['http://www.fsf.org', 'http://www.april.org']
+        self.assertEqual(result, valid)
+
+    @unittest.skip("Known bug")
+    def test_url_with_parenthesis(self):
+        text = """
+        (http://www.fsf.org)
+        """
+        result = _get_unarchived_urls(text)
+        valid = ['http://www.fsf.org']
         self.assertEqual(result, valid)
 
 

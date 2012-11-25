@@ -34,6 +34,21 @@ def strip_noarchive(text):
     text = re.sub("!@.*", '', text)
     return text
 
+
+
+def _get_unarchived_urls(original_text):
+    """
+    Get the list of urls without archive
+
+    :returns: a list of urls
+    """
+    link = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#~]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+    #get a copy without noarchive stuffs
+    copy_text = strip_noarchive(original_text)
+
+    #get all URLs
+    urls = link.findall(copy_text)
+    return urls
     
 def process_text(original_text, zim_archive_path):
     """
@@ -47,13 +62,8 @@ def process_text(original_text, zim_archive_path):
 
     :returns: Tuple (boolean, string)
     """
-    link = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#~]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
-    #get a copy without noarchive stuffs
-    copy_text = strip_noarchive(original_text)
 
-    #get all URLs
-    urls = link.findall(copy_text)
-
+    urls = _get_unarchived_urls(original_text)
     errors = False
 
     for url in urls:
