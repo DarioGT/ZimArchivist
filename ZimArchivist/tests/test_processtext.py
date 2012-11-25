@@ -48,13 +48,13 @@ After
 
 
     #########################
-    # _get_unarchived_urls()
+    # _get_urls()
     #########################
     def test_simple_url(self):
         text = """
         http://www.fsf.org
         """
-        result = _get_unarchived_urls(text)
+        result = _get_urls(text)
         valid = ['http://www.fsf.org']
         self.assertEqual(result, valid)
 
@@ -62,7 +62,7 @@ After
         text = """
         http://www.fsf.org and http://www.april.org
         """
-        result = _get_unarchived_urls(text)
+        result = _get_urls(text)
         valid = ['http://www.fsf.org', 'http://www.april.org']
         self.assertEqual(result, valid)
 

@@ -1,14 +1,27 @@
 Known bugs
-----------
+===========
+
+Similar links in the same file
+------------------------------
 
 If (at least) one file contains several times the same link, each link receive several archive tags.
 This is due to the parallel threading I guess
 
 
+Links in parenthesis
+--------------------
+
 if the line contains:
  (http://toto.org), it fails.
 
 * Reproduced in test_processtext
+ -> a url in () gets an incorrect results.
+ -> Moreover, libzimsciunto contains utils.protect
+ --> I think it should protect ( and )
+ --> It must be in ZimArchivist/ instead...
+
+
+Traceback
 
 Exception in thread Thread-3:
 Traceback (most recent call last):
