@@ -8,6 +8,17 @@ Welcome to ZimArchivist's documentation!
 ZimArchivist is designed for your Zim wiki: zim-wiki.org
 It makes copies of your links in your notes on your disk.
 
+
+
+:Author: François Boulogne
+:Download: `Stable version <http://sciunto.org/source/>`_
+:Developer's corner: `github.com project <https://github.com/sciunto/ZimArchivist>`_
+:Generated: |today|
+:License: GPL v3
+:Version: |release|
+
+
+
 Contents:
 
 .. toctree::
