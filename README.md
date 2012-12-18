@@ -22,3 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 # How to use this tool?
 Read the documentation:
 http://sciunto.github.com/ZimArchivist/
+
+# Download
+
+http://sciunto.org/source/
+
