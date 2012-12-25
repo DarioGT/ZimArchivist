@@ -42,23 +42,7 @@ GNU GPL v3 or later.
 How to install
 ==============
 
-Requirements
-------------
-
-* python 3
-* `python-libZimSciunto <http://pypi.python.org/pypi/libZimSciunto/>`_
-* BeautifulSoup 4
-
-Install
--------
-
-A package is available on `pypi <http://pypi.python.org/pypi/ZimArchivist/>`_.
-Otherwise, you can install it by running:
-
-.. code-block:: sh
-
-    python setup.py install --root='/'
-
+See :doc:`install`.
 
 How to run ZimArchivist?
 ========================
