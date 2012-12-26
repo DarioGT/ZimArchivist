@@ -25,5 +25,5 @@ http://sciunto.github.com/ZimArchivist/
 
 # Download
 
-http://sciunto.org/source/
+http://source.sciunto.org/zimarchivist/
 
