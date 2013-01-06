@@ -11,7 +11,7 @@ Requirements
 Package manager
 ---------------
 
-An AUR package `AUR package <https://aur.archlinux.org/packages/citebib/>`_ is available. 
+An AUR package `AUR package <https://aur.archlinux.org/packages/python-libzimsciunto/`_ is available. 
 
 PyPI
 ----
