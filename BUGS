@@ -1,6 +1,13 @@
 Known bugs
 ===========
 
+Path
+----
+
+Sometimes, the path is not correct (startdir). Not sure to know the reason.
+Maybe it comes from the curdir when the script is run.
+
+
 Similar links in the same file
 ------------------------------
 
