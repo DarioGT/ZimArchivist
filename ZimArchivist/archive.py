@@ -52,7 +52,7 @@ class ThreadImg(threading.Thread):
     def __init__(self, lock, uuid, imgs, parsed, htmlpath):
         """
         Constructor
-        
+
         """
         threading.Thread.__init__(self)
         self.lock = lock
@@ -60,11 +60,11 @@ class ThreadImg(threading.Thread):
         self.uuid = uuid
         self.parsed = parsed
         self.htmlpath = htmlpath
-    
+
     def run(self):
         """
         One job...
-        
+
         """
         #TODO deals with URLError
         #TODO deals with IOError (connection down?)
@@ -78,7 +78,7 @@ class ThreadImg(threading.Thread):
                 print('KeyError img["src"]. Ignoring...')
                 continue
             new_filename = str(self.uuid) + '-' + str(number) + str(os.path.splitext(original_filename)[1])
-           
+
             print('thread: ' + '--> ' + original_filename + '--' + str(number))
             #Directory for pictures
             pic_dir = os.path.join(self.htmlpath, str(self.uuid))
@@ -86,7 +86,7 @@ class ThreadImg(threading.Thread):
             if not os.path.exists(pic_dir):
                 os.mkdir(pic_dir)
             self.lock.release()
-            outpath = os.path.join(pic_dir, new_filename) 
+            outpath = os.path.join(pic_dir, new_filename)
 
             try:
                 #if src start with http...
@@ -110,7 +110,7 @@ class ThreadImg(threading.Thread):
             img["src"] = os.path.relpath(outpath, self.htmlpath) # rel path
             #end...
             self.queue.task_done()
-                
+
 
 
 
@@ -122,7 +122,7 @@ def get_archive_list(archive_path):
         if os.path.isfile(element):
             archives.append(os.path.basename(element))
     return archives
-        
+
 
 def make_archive_thread(file_dir, uuid, url):
     """
@@ -130,11 +130,11 @@ def make_archive_thread(file_dir, uuid, url):
     and everything is tagged with uuid.
     If url is text/html, pictures are saved in a subdir
     Otherwise, the bin file is saved.
-    
+
     file_dir : directory where the archive is written
     uuid : Archive ID
     url : URL to archive
-   
+
     raise URLError if url is invalid or not accessible
 
     return : extension of the main file
@@ -143,7 +143,7 @@ def make_archive_thread(file_dir, uuid, url):
 
     mimetype, encoding = mimetypes.guess_type(url)
     logger.debug('mimetype: ' + str(mimetype) )
- 
+
     timeout = 15
 
     if mimetype == None:
@@ -206,7 +206,7 @@ def make_archive_thread(file_dir, uuid, url):
         img_queue.join()
         print('done')
         html_file = os.path.join(file_dir, str(uuid) + file_extension)
-        with open(html_file, 'w') as htmlfile: 
+        with open(html_file, 'w') as htmlfile:
             htmlfile.write(soup.prettify())
     else:
         logger.debug('Download as a bin file')
@@ -234,10 +234,10 @@ def get_unlinked_archive(zim_files, zim_archives):
     #to list html archives which are
     #still in Notes
     file_archives = {}
-    for name in zim_archives: 
+    for name in zim_archives:
         file_archives[name] = False
         print("START: %s" % name)
-  
+
     #We process all zim files
     #To get existing links
     for filename in zim_files:
@@ -256,7 +256,7 @@ def get_unlinked_archive(zim_files, zim_archives):
             archives.append(os.path.splitext(htmlfile)[0])
             print("RQ: %s" % htmlfile)
     return archives
-                
+
 def clean_archive(zim_files, zim_archive_path):
     """ Remove archives with no entry """
 
@@ -271,7 +271,7 @@ def clean_archive(zim_files, zim_archive_path):
             os.remove(htmlfile)
         if os.path.exists(archive):
             logger.info('remove ' + str(archive))
-            shutil.rmtree(archive) 
+            shutil.rmtree(archive)
 
 if __name__ == '__main__':
     pass
